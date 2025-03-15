@@ -56,6 +56,7 @@ class TikTokConnectionWrapper extends EventEmitter {
     events.forEach(event => {
       this.connection.on(event, (data) => {
         logger.debug('TikTok', `Received ${event} event for @${this.uniqueId}`, data)
+        this.emit(event, data)
       })
     })
   }
@@ -86,9 +87,20 @@ class TikTokConnectionWrapper extends EventEmitter {
         return
       }
 
+      logger.debug('TikTok', 'isReconnect:', isReconnect)
       // Notify client
       if (!isReconnect) {
-        this.emit('connected', state)
+        logger.debug('TikTok', 'Emitting connected event with state:', state);
+        
+        // Create a properly formatted state object that matches TikTokConnectionState
+        const connectionState = {
+          state: 'CONNECTED',
+          targetUniqueId: this.uniqueId,
+          roomId: state && state.roomId ? state.roomId : 'unknown'
+        };
+        
+        logger.debug('TikTok', 'Formatted connection state:', connectionState);
+        this.emit('connected', connectionState);
       }
     } catch (err) {
       logger.error('TikTok', `${isReconnect ? 'Reconnection' : 'Connection'} failed for @${this.uniqueId}`, err)

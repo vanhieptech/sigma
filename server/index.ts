@@ -39,18 +39,32 @@ app.prepare().then(() => {
   const server = express()
   const httpServer = createServer(server)
 
-  // Create Socket.IO server
+  // Create Socket.IO server with correct path
   const io = new Server(httpServer, {
-    path: '/api/socket/io',
-    addTrailingSlash: false,
+    path: '/socket.io',
+    transports: ['polling', 'websocket'],
     cors: {
       origin: '*',
       methods: ['GET', 'POST']
     }
   })
 
-  // Handle Socket.IO connections
+  // Handle Socket.IO connections with rate limiting
+  const connectedClients = new Set<string>()
   io.on('connection', (socket) => {
+    // Rate limiting: check if client is already connected
+    const clientId = socket.handshake.headers['x-client-id'] as string || socket.id
+    if (connectedClients.has(clientId)) {
+      logger.warn('Duplicate connection attempt', clientId)
+      socket.emit('error', {
+        isConnected: false,
+        isConnecting: false,
+        error: 'Already connected. Please use existing connection.'
+      })
+      return
+    }
+    
+    connectedClients.add(clientId)
     logger.info('Socket connected', socket.id)
 
     // Check if the client is rate limited
@@ -137,7 +151,21 @@ app.prepare().then(() => {
         connection.connect()
           .then(state => {
             logger.info('Socket', `Socket ${socket.id} connected to TikTok user ${username}`)
-            socket.emit('connected', state)
+            logger.debug('Socket', 'State:', state);
+            
+            // Don't send the raw state from TikTokConnectionWrapper
+            // Create a complete state object with the correct username
+            const connectionState = {
+              state: 'CONNECTED',
+              isConnected: true,
+              isConnecting: false,
+              roomId: 'unknown', // Simplify to avoid TypeScript errors
+              uniqueId: username, // Important: use the username here
+              error: null
+            };
+            
+            logger.debug('Socket', 'Sending connection state to client:', connectionState);
+            socket.emit('connected', connectionState);
 
             // Forward TikTok events to the client
             connection.on('chat', (data) => {
@@ -217,6 +245,10 @@ app.prepare().then(() => {
     // Handle disconnect
     socket.on('disconnect', () => {
       logger.info('Socket disconnected', socket.id)
+      
+      // Remove from connected clients set
+      const clientId = socket.handshake.headers['x-client-id'] as string || socket.id
+      connectedClients.delete(clientId)
       
       // Clean up TikTok connection
       if (connections[socket.id]?.connection) {
