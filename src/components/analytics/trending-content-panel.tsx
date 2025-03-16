@@ -1,49 +1,60 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { 
-  TrendingUp, 
-  Hash, 
-  Music, 
-  RefreshCw, 
-  Plus, 
-  Sparkles, 
-  FileText, 
-  Lightbulb, 
-  Play, 
-  Copy, 
-  CheckCircle2, 
-  Filter
+import {
+  TrendingUp,
+  Hash,
+  Music,
+  RefreshCw,
+  Plus,
+  Sparkles,
+  FileText,
+  Lightbulb,
+  Play,
+  Copy,
+  CheckCircle2,
+  Filter,
 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { useTrendingContent } from '@/hooks/use-trending-content';
 import { TikTokContentIdea } from '@/types/tiktok';
 
 // Component to display a content idea card
-const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea, onSave: () => void }) => {
+const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea; onSave: () => void }) => {
   const [isSaved, setIsSaved] = useState(false);
-  
+
   const handleSave = () => {
     setIsSaved(true);
     onSave();
     // Reset saved state after 3 seconds
     setTimeout(() => setIsSaved(false), 3000);
   };
-  
+
   return (
     <Card className="relative">
       {idea.trending && (
@@ -54,23 +65,28 @@ const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea, onSave: ()
           </Badge>
         </div>
       )}
-      
+
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{idea.title}</CardTitle>
         <CardDescription className="text-sm">{idea.description}</CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-3 pb-2">
         {idea.trend && (
           <div className="flex items-center space-x-2 text-sm">
-            <Badge variant="outline" className="flex items-center gap-1 border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400">
+            <Badge
+              variant="outline"
+              className="flex items-center gap-1 border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400"
+            >
               <TrendingUp className="h-3 w-3" />
               {idea.trend.type === 'hashtag' ? 'Hashtag' : 'Sound'} Trend
             </Badge>
-            <span className="text-green-600 dark:text-green-400 text-xs">+{Math.round(idea.trend.growthRate)}% growth</span>
+            <span className="text-green-600 dark:text-green-400 text-xs">
+              +{Math.round(idea.trend.growthRate)}% growth
+            </span>
           </div>
         )}
-        
+
         <div>
           <p className="text-xs font-medium mb-1 text-muted-foreground">Suggested Hashtags:</p>
           <div className="flex flex-wrap gap-1">
@@ -81,7 +97,7 @@ const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea, onSave: ()
             ))}
           </div>
         </div>
-        
+
         {idea.suggestedSoundId && (
           <div>
             <p className="text-xs font-medium mb-1 text-muted-foreground">Suggested Sound:</p>
@@ -91,7 +107,7 @@ const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea, onSave: ()
             </div>
           </div>
         )}
-        
+
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="bg-muted/50 p-2 rounded-md">
             <p className="font-medium">Est. Views</p>
@@ -103,11 +119,11 @@ const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea, onSave: ()
           </div>
         </div>
       </CardContent>
-      
+
       <CardFooter className="pt-2">
-        <Button 
-          variant={isSaved ? "default" : "outline"} 
-          size="sm" 
+        <Button
+          variant={isSaved ? 'default' : 'outline'}
+          size="sm"
           className="w-full"
           onClick={handleSave}
         >
@@ -129,7 +145,15 @@ const ContentIdeaCard = ({ idea, onSave }: { idea: TikTokContentIdea, onSave: ()
 };
 
 // Hashtag component
-const HashtagItem = ({ name, videos, trending }: { name: string, videos: number, trending: boolean }) => (
+const HashtagItem = ({
+  name,
+  videos,
+  trending,
+}: {
+  name: string;
+  videos: number;
+  trending: boolean;
+}) => (
   <div className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors">
     <div className="flex items-center">
       <Hash className="h-4 w-4 mr-2 text-blue-500" />
@@ -138,7 +162,10 @@ const HashtagItem = ({ name, videos, trending }: { name: string, videos: number,
     <div className="flex items-center space-x-2">
       <span className="text-sm text-muted-foreground">{videos.toLocaleString()} videos</span>
       {trending && (
-        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-800">
+        <Badge
+          variant="outline"
+          className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-800"
+        >
           <TrendingUp className="h-3 w-3 mr-1" />
           Trending
         </Badge>
@@ -148,25 +175,36 @@ const HashtagItem = ({ name, videos, trending }: { name: string, videos: number,
 );
 
 // Sound component
-const SoundItem = ({ name, authorName, usageCount, trending, durationSec }: { 
-  name: string, 
-  authorName: string, 
-  usageCount: number, 
-  trending: boolean,
-  durationSec: number
+const SoundItem = ({
+  name,
+  authorName,
+  usageCount,
+  trending,
+  durationSec,
+}: {
+  name: string;
+  authorName: string;
+  usageCount: number;
+  trending: boolean;
+  durationSec: number;
 }) => (
   <div className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors">
     <div className="flex items-center">
       <Music className="h-4 w-4 mr-2 text-purple-500" />
       <div>
         <p className="font-medium text-sm">{name}</p>
-        <p className="text-xs text-muted-foreground">@{authorName} • {durationSec}s</p>
+        <p className="text-xs text-muted-foreground">
+          @{authorName} • {durationSec}s
+        </p>
       </div>
     </div>
     <div className="flex items-center space-x-2">
       <span className="text-sm text-muted-foreground">{usageCount.toLocaleString()} uses</span>
       {trending && (
-        <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-800">
+        <Badge
+          variant="outline"
+          className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-800"
+        >
           <TrendingUp className="h-3 w-3 mr-1" />
           Trending
         </Badge>
@@ -177,16 +215,16 @@ const SoundItem = ({ name, authorName, usageCount, trending, durationSec }: {
 
 export default function TrendingContentPanel() {
   const [savedIdeas, setSavedIdeas] = useState<TikTokContentIdea[]>([]);
-  
-  const { 
-    hashtags, 
-    sounds, 
-    contentIdeas, 
-    isLoading, 
-    selectedCategory, 
-    setSelectedCategory, 
-    refreshTrends, 
-    generateContentIdea 
+
+  const {
+    hashtags,
+    sounds,
+    contentIdeas,
+    isLoading,
+    selectedCategory,
+    setSelectedCategory,
+    refreshTrends,
+    generateContentIdea,
   } = useTrendingContent();
 
   const handleSaveIdea = (idea: TikTokContentIdea) => {
@@ -221,7 +259,7 @@ export default function TrendingContentPanel() {
           Discover trending content and generate viral ideas for your TikTok channel
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium">Filter by Category:</h3>
@@ -244,7 +282,7 @@ export default function TrendingContentPanel() {
             </SelectContent>
           </Select>
         </div>
-      
+
         <Tabs defaultValue="ideas" className="w-full">
           <TabsList className="grid grid-cols-3 mb-4">
             <TabsTrigger value="ideas">
@@ -260,28 +298,28 @@ export default function TrendingContentPanel() {
               Sounds
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="ideas" className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-medium">AI Generated Content Ideas</h3>
-              <Button variant="outline" size="sm" onClick={() => contentIdeas.forEach(handleSaveIdea)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => contentIdeas.forEach(handleSaveIdea)}
+              >
                 <Copy className="h-3 w-3 mr-2" />
                 Save All
               </Button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {contentIdeas.map(idea => (
-                <ContentIdeaCard 
-                  key={idea.id} 
-                  idea={idea} 
-                  onSave={() => handleSaveIdea(idea)}
-                />
+                <ContentIdeaCard key={idea.id} idea={idea} onSave={() => handleSaveIdea(idea)} />
               ))}
             </div>
-            
+
             <Separator />
-            
+
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-medium">Your Saved Ideas ({savedIdeas.length})</h3>
               <Button variant="outline" size="sm" onClick={handleCreateNewIdea}>
@@ -289,7 +327,7 @@ export default function TrendingContentPanel() {
                 Generate New
               </Button>
             </div>
-            
+
             {savedIdeas.length > 0 ? (
               <ScrollArea className="h-[300px] pr-4">
                 <div className="grid grid-cols-1 gap-4">
@@ -300,7 +338,7 @@ export default function TrendingContentPanel() {
                           <h4 className="font-medium">{idea.title}</h4>
                           <p className="text-sm text-muted-foreground">{idea.description}</p>
                         </div>
-                        <Badge variant={idea.trending ? "default" : "outline"}>
+                        <Badge variant={idea.trending ? 'default' : 'outline'}>
                           {idea.category}
                         </Badge>
                       </div>
@@ -332,7 +370,7 @@ export default function TrendingContentPanel() {
               </div>
             )}
           </TabsContent>
-          
+
           <TabsContent value="hashtags">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -342,30 +380,28 @@ export default function TrendingContentPanel() {
                   {hashtags.filter(h => h.trending).length} Trending
                 </Badge>
               </div>
-              
+
               <Accordion type="single" collapsible defaultValue="trending">
                 <AccordionItem value="trending">
-                  <AccordionTrigger className="text-sm font-medium">
-                    Trending Now
-                  </AccordionTrigger>
+                  <AccordionTrigger className="text-sm font-medium">Trending Now</AccordionTrigger>
                   <AccordionContent>
                     <ScrollArea className="h-[300px]">
                       <div className="space-y-1 pr-4">
                         {hashtags
                           .filter(hashtag => hashtag.trending)
                           .map(hashtag => (
-                            <HashtagItem 
-                              key={hashtag.name} 
-                              name={hashtag.name} 
-                              videos={hashtag.videos} 
-                              trending={hashtag.trending} 
+                            <HashtagItem
+                              key={hashtag.name}
+                              name={hashtag.name}
+                              videos={hashtag.videos}
+                              trending={hashtag.trending}
                             />
                           ))}
                       </div>
                     </ScrollArea>
                   </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="all">
                   <AccordionTrigger className="text-sm font-medium">
                     All Popular Hashtags
@@ -374,11 +410,11 @@ export default function TrendingContentPanel() {
                     <ScrollArea className="h-[300px]">
                       <div className="space-y-1 pr-4">
                         {hashtags.map(hashtag => (
-                          <HashtagItem 
-                            key={hashtag.name} 
-                            name={hashtag.name} 
-                            videos={hashtag.videos} 
-                            trending={hashtag.trending} 
+                          <HashtagItem
+                            key={hashtag.name}
+                            name={hashtag.name}
+                            videos={hashtag.videos}
+                            trending={hashtag.trending}
                           />
                         ))}
                       </div>
@@ -386,7 +422,7 @@ export default function TrendingContentPanel() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              
+
               <div className="bg-muted/30 rounded-lg p-4">
                 <h4 className="text-sm font-medium mb-2 flex items-center">
                   <Lightbulb className="h-4 w-4 mr-2 text-amber-500" />
@@ -402,7 +438,7 @@ export default function TrendingContentPanel() {
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="sounds">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -412,23 +448,21 @@ export default function TrendingContentPanel() {
                   {sounds.filter(s => s.trending).length} Trending
                 </Badge>
               </div>
-              
+
               <Accordion type="single" collapsible defaultValue="trending">
                 <AccordionItem value="trending">
-                  <AccordionTrigger className="text-sm font-medium">
-                    Trending Now
-                  </AccordionTrigger>
+                  <AccordionTrigger className="text-sm font-medium">Trending Now</AccordionTrigger>
                   <AccordionContent>
                     <ScrollArea className="h-[300px]">
                       <div className="space-y-1 pr-4">
                         {sounds
                           .filter(sound => sound.trending)
                           .map(sound => (
-                            <SoundItem 
-                              key={sound.id} 
-                              name={sound.name} 
-                              authorName={sound.authorName} 
-                              usageCount={sound.usageCount} 
+                            <SoundItem
+                              key={sound.id}
+                              name={sound.name}
+                              authorName={sound.authorName}
+                              usageCount={sound.usageCount}
                               trending={sound.trending}
                               durationSec={sound.durationSec}
                             />
@@ -437,7 +471,7 @@ export default function TrendingContentPanel() {
                     </ScrollArea>
                   </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="all">
                   <AccordionTrigger className="text-sm font-medium">
                     All Popular Sounds
@@ -446,11 +480,11 @@ export default function TrendingContentPanel() {
                     <ScrollArea className="h-[300px]">
                       <div className="space-y-1 pr-4">
                         {sounds.map(sound => (
-                          <SoundItem 
-                            key={sound.id} 
-                            name={sound.name} 
-                            authorName={sound.authorName} 
-                            usageCount={sound.usageCount} 
+                          <SoundItem
+                            key={sound.id}
+                            name={sound.name}
+                            authorName={sound.authorName}
+                            usageCount={sound.usageCount}
                             trending={sound.trending}
                             durationSec={sound.durationSec}
                           />
@@ -460,7 +494,7 @@ export default function TrendingContentPanel() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              
+
               <div className="bg-muted/30 rounded-lg p-4">
                 <h4 className="text-sm font-medium mb-2 flex items-center">
                   <Lightbulb className="h-4 w-4 mr-2 text-purple-500" />
@@ -478,13 +512,15 @@ export default function TrendingContentPanel() {
           </TabsContent>
         </Tabs>
       </CardContent>
-      
+
       <CardFooter>
         <div className="w-full flex justify-between text-xs text-muted-foreground">
-          <div>Category: <span className="font-medium capitalize">{selectedCategory}</span></div>
+          <div>
+            Category: <span className="font-medium capitalize">{selectedCategory}</span>
+          </div>
           <div>Last updated: {new Date().toLocaleString()}</div>
         </div>
       </CardFooter>
     </Card>
   );
-} 
+}

@@ -16,7 +16,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
   // Group comments by parent
   const topLevelComments = comments.filter(comment => !comment.parentCommentId);
   const repliesByParent = new Map<string, SocialMediaComment[]>();
-  
+
   comments.forEach(comment => {
     if (comment.parentCommentId) {
       const replies = repliesByParent.get(comment.parentCommentId) || [];
@@ -24,12 +24,12 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
       repliesByParent.set(comment.parentCommentId, replies);
     }
   });
-  
+
   // Sort comments by date (newest first)
   const sortedComments = [...topLevelComments].sort(
     (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
   );
-  
+
   if (loading) {
     return (
       <Card>
@@ -42,7 +42,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
       </Card>
     );
   }
-  
+
   if (!post && comments.length === 0) {
     return (
       <Card>
@@ -55,7 +55,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
       </Card>
     );
   }
-  
+
   return (
     <Tabs defaultValue="comments">
       <TabsList className="mb-4">
@@ -64,24 +64,20 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
         <TabsTrigger value="influencers">Top Influencers</TabsTrigger>
         <TabsTrigger value="hashtags">Hashtags</TabsTrigger>
       </TabsList>
-      
+
       <TabsContent value="comments">
         <Card>
           <CardHeader>
             <CardTitle>
-              {post?.content ? post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '') : 'Facebook Post'}
+              {post?.content
+                ? post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')
+                : 'Facebook Post'}
             </CardTitle>
             {post && (
               <div className="flex flex-wrap gap-2 mt-2">
-                <Badge variant="secondary">
-                  {post.metrics.likes} Likes
-                </Badge>
-                <Badge variant="secondary">
-                  {post.metrics.comments} Comments
-                </Badge>
-                <Badge variant="secondary">
-                  {post.metrics.shares} Shares
-                </Badge>
+                <Badge variant="secondary">{post.metrics.likes} Likes</Badge>
+                <Badge variant="secondary">{post.metrics.comments} Comments</Badge>
+                <Badge variant="secondary">{post.metrics.shares} Shares</Badge>
               </div>
             )}
           </CardHeader>
@@ -100,28 +96,30 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
                       </div>
                       <div className="mt-1">{comment.content}</div>
                       <div className="flex gap-2 mt-1">
-                        <span className="text-sm text-gray-500">
-                          {comment.metrics.likes} Likes
-                        </span>
+                        <span className="text-sm text-gray-500">{comment.metrics.likes} Likes</span>
                         <span className="text-sm text-gray-500">
                           {comment.metrics.replies} Replies
                         </span>
                       </div>
-                      
+
                       {/* Display hashtags and mentions */}
                       {(comment.hashtags.length > 0 || comment.mentions.length > 0) && (
                         <div className="flex flex-wrap gap-1 mt-1">
                           {comment.hashtags.map(tag => (
-                            <Badge key={tag} variant="outline">#{tag}</Badge>
+                            <Badge key={tag} variant="outline">
+                              #{tag}
+                            </Badge>
                           ))}
                           {comment.mentions.map(mention => (
-                            <Badge key={mention} variant="outline">@{mention}</Badge>
+                            <Badge key={mention} variant="outline">
+                              @{mention}
+                            </Badge>
                           ))}
                         </div>
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Display replies */}
                   {repliesByParent.has(comment.id) && (
                     <div className="pl-10 space-y-2 mt-2">
@@ -146,7 +144,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
                       ))}
                     </div>
                   )}
-                  
+
                   <Separator />
                 </div>
               ))}
@@ -154,7 +152,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
           </CardContent>
         </Card>
       </TabsContent>
-      
+
       <TabsContent value="stats">
         <Card>
           <CardHeader>
@@ -166,22 +164,20 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
                 <div className="text-2xl font-bold">{comments.length}</div>
                 <div className="text-sm text-gray-500">Total Comments</div>
               </div>
-              
+
               <div className="p-4 border rounded-lg">
                 <div className="text-2xl font-bold">
                   {new Set(comments.map(c => c.authorId)).size}
                 </div>
                 <div className="text-sm text-gray-500">Unique Users</div>
               </div>
-              
+
               <div className="p-4 border rounded-lg">
-                <div className="text-2xl font-bold">
-                  {analysis?.engagementRate.toFixed(2) || 0}
-                </div>
+                <div className="text-2xl font-bold">{analysis?.engagementRate.toFixed(2) || 0}</div>
                 <div className="text-sm text-gray-500">Engagement Rate</div>
               </div>
             </div>
-            
+
             {analysis?.activityTimeline && (
               <div className="mt-6">
                 <h3 className="text-lg font-medium mb-2">Activity Timeline</h3>
@@ -189,12 +185,14 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
                   {/* Simple bar chart for activity */}
                   <div className="flex h-full items-end space-x-1">
                     {analysis.activityTimeline.map((day, i) => {
-                      const maxCount = Math.max(...analysis.activityTimeline.map(d => d.commentCount));
+                      const maxCount = Math.max(
+                        ...analysis.activityTimeline.map(d => d.commentCount)
+                      );
                       const height = (day.commentCount / maxCount) * 100;
-                      
+
                       return (
                         <div key={i} className="flex-1 flex flex-col items-center">
-                          <div 
+                          <div
                             className="w-full bg-blue-500 rounded-t"
                             style={{ height: `${height}%` }}
                           ></div>
@@ -211,7 +209,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
           </CardContent>
         </Card>
       </TabsContent>
-      
+
       <TabsContent value="influencers">
         <Card>
           <CardHeader>
@@ -239,7 +237,7 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
           </CardContent>
         </Card>
       </TabsContent>
-      
+
       <TabsContent value="hashtags">
         <Card>
           <CardHeader>
@@ -248,14 +246,14 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
           <CardContent>
             {analysis?.hashtagAnalysis && (
               <div className="flex flex-wrap gap-2">
-                {analysis.hashtagAnalysis.map((tag) => (
+                {analysis.hashtagAnalysis.map(tag => (
                   <Badge key={tag.hashtag} className="text-lg py-1 px-3">
                     #{tag.hashtag} <span className="ml-1 text-sm">({tag.count})</span>
                   </Badge>
                 ))}
               </div>
             )}
-            
+
             {(!analysis?.hashtagAnalysis || analysis.hashtagAnalysis.length === 0) && (
               <p>No hashtags found in the comments.</p>
             )}
@@ -264,4 +262,4 @@ export function FacebookComments({ post, comments, analysis, loading }: Facebook
       </TabsContent>
     </Tabs>
   );
-} 
+}

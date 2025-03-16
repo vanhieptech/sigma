@@ -11,41 +11,41 @@ interface NavigationProps {
 
 export function CrawlerNavigation({ className }: NavigationProps) {
   const pathname = usePathname();
-  
+
   const navItems = [
     {
       name: 'Dashboard',
       href: '/dashboard/crawlers',
       icon: <Home className="h-5 w-5" />,
-      exact: true
+      exact: true,
     },
     {
       name: 'Facebook',
       href: '/dashboard/crawlers/facebook',
       icon: <Facebook className="h-5 w-5" />,
-      exact: false
+      exact: false,
     },
     {
       name: 'TikTok',
       href: '/dashboard/crawlers/tiktok',
       icon: <MessageSquare className="h-5 w-5" />,
       exact: false,
-      disabled: true
+      disabled: true,
     },
     {
       name: 'Twitter',
       href: '/dashboard/crawlers/twitter',
       icon: <Twitter className="h-5 w-5" />,
       exact: false,
-      disabled: true
+      disabled: true,
     },
     {
       name: 'LinkedIn',
       href: '/dashboard/crawlers/linkedin',
       icon: <Linkedin className="h-5 w-5" />,
       exact: false,
-      disabled: true
-    }
+      disabled: true,
+    },
   ];
 
   const isActiveLink = (href: string, exact: boolean) => {
@@ -58,7 +58,7 @@ export function CrawlerNavigation({ className }: NavigationProps) {
   return (
     <nav className={cn('flex overflow-auto border-b', className)}>
       <div className="container flex items-center">
-        {navItems.map((item) => (
+        {navItems.map(item => (
           <Link
             key={item.name}
             href={item.disabled ? '#' : item.href}
@@ -69,7 +69,7 @@ export function CrawlerNavigation({ className }: NavigationProps) {
                 : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-200',
               item.disabled && 'opacity-50 cursor-not-allowed'
             )}
-            onClick={(e) => {
+            onClick={e => {
               if (item.disabled) {
                 e.preventDefault();
               }
@@ -88,4 +88,4 @@ export function CrawlerNavigation({ className }: NavigationProps) {
       </div>
     </nav>
   );
-} 
+}

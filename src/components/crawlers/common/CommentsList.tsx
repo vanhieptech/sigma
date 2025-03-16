@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { SocialMediaComment } from '@/types/crawler';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { ThumbsUp, MessageSquare, CalendarIcon, Search } from 'lucide-react';
 
@@ -28,9 +28,11 @@ export function CommentsList({ comments, loading = false }: CommentsListProps) {
       <div className="space-y-4">
         <div className="h-10 bg-slate-200 rounded animate-pulse" />
         <div className="space-y-2">
-          {Array(5).fill(0).map((_, i) => (
-            <div key={i} className="h-16 bg-slate-200 rounded animate-pulse" />
-          ))}
+          {Array(5)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i} className="h-16 bg-slate-200 rounded animate-pulse" />
+            ))}
         </div>
       </div>
     );
@@ -47,7 +49,7 @@ export function CommentsList({ comments, loading = false }: CommentsListProps) {
   // Filter comments based on search
   const filteredComments = comments.filter(comment => {
     if (!searchTerm) return true;
-    
+
     const searchLower = searchTerm.toLowerCase();
     return (
       comment.content.toLowerCase().includes(searchLower) ||
@@ -78,7 +80,7 @@ export function CommentsList({ comments, loading = false }: CommentsListProps) {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
   };
 
@@ -91,26 +93,26 @@ export function CommentsList({ comments, loading = false }: CommentsListProps) {
             placeholder="Search comments..."
             className="pl-9"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex space-x-2">
-          <Badge 
-            variant={sortBy === 'newest' ? 'default' : 'outline'} 
+          <Badge
+            variant={sortBy === 'newest' ? 'default' : 'outline'}
             className="cursor-pointer"
             onClick={() => setSortBy('newest')}
           >
             <CalendarIcon className="h-3 w-3 mr-1" /> Newest
           </Badge>
-          <Badge 
-            variant={sortBy === 'likes' ? 'default' : 'outline'} 
+          <Badge
+            variant={sortBy === 'likes' ? 'default' : 'outline'}
             className="cursor-pointer"
             onClick={() => setSortBy('likes')}
           >
             <ThumbsUp className="h-3 w-3 mr-1" /> Most Likes
           </Badge>
-          <Badge 
-            variant={sortBy === 'replies' ? 'default' : 'outline'} 
+          <Badge
+            variant={sortBy === 'replies' ? 'default' : 'outline'}
             className="cursor-pointer"
             onClick={() => setSortBy('replies')}
           >
@@ -131,21 +133,14 @@ export function CommentsList({ comments, loading = false }: CommentsListProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedComments.map((comment) => (
-              <TableRow 
-                key={comment.id} 
-                className={comment.parentCommentId ? "bg-gray-50" : ""}
-              >
+            {sortedComments.map(comment => (
+              <TableRow key={comment.id} className={comment.parentCommentId ? 'bg-gray-50' : ''}>
                 <TableCell className="font-medium">
-                  {comment.parentCommentId && (
-                    <span className="text-gray-400 mr-1">↪</span>
-                  )}
+                  {comment.parentCommentId && <span className="text-gray-400 mr-1">↪</span>}
                   {comment.authorName}
                 </TableCell>
                 <TableCell>
-                  <div className="whitespace-pre-wrap break-words">
-                    {comment.content}
-                  </div>
+                  <div className="whitespace-pre-wrap break-words">{comment.content}</div>
                   {(comment.hashtags.length > 0 || comment.mentions.length > 0) && (
                     <div className="mt-1 flex flex-wrap gap-1">
                       {comment.hashtags.map(tag => (
@@ -181,10 +176,10 @@ export function CommentsList({ comments, loading = false }: CommentsListProps) {
           </TableBody>
         </Table>
       </div>
-      
+
       <div className="text-sm text-gray-500 text-right">
         Showing {sortedComments.length} of {comments.length} comments
       </div>
     </div>
   );
-} 
+}

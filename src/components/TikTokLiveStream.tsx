@@ -1,10 +1,15 @@
-"use client";
-
 import { useState, useEffect, useRef } from 'react';
-import { useToast } from "@/src/hooks/use-toast";
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,31 +20,31 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import ReactAudioPlayer from 'react-audio-player';
 import { io, Socket } from 'socket.io-client';
-import { 
-  TikTokComment, 
-  TikTokGift, 
+import {
+  TikTokComment,
+  TikTokGift,
   TikTokLike,
   TikTokShare,
   TikTokFollow,
   TikTokMember,
   TikTokViewerCount,
-  TikTokConnectionState
+  TikTokConnectionState,
 } from '@/lib/tiktok-live';
-import { 
-  MessageSquare, 
-  Gift, 
+import {
+  MessageSquare,
+  Gift,
   Heart,
   Share,
   UserPlus,
   Users,
   UserPlus2,
-  AlertCircle, 
-  Loader2, 
+  AlertCircle,
+  Loader2,
   Send,
   Volume2,
   VolumeX,
   Settings,
-  BrainCircuit
+  BrainCircuit,
 } from 'lucide-react';
 
 interface AIResponse {
@@ -75,7 +80,7 @@ export default function TikTokLiveStream() {
   const [connectionState, setConnectionState] = useState<TikTokConnectionState>({
     isConnected: false,
     isConnecting: false,
-    error: null
+    error: null,
   });
 
   // Event states
@@ -87,7 +92,7 @@ export default function TikTokLiveStream() {
   const [members, setMembers] = useState<TikTokMember[]>([]);
   const [viewerCount, setViewerCount] = useState<number>(0);
   const [totalLikes, setTotalLikes] = useState<number>(0);
-  
+
   // AI states
   const [aiResponses, setAiResponses] = useState<AIResponse[]>([]);
   const [currentAudio, setCurrentAudio] = useState<string | null>(null);
@@ -103,7 +108,7 @@ export default function TikTokLiveStream() {
     respondToPurchases: true,
     giftThreshold: 10,
     likeThreshold: 5,
-    joinResponseRate: 20
+    joinResponseRate: 20,
   });
   const [audioVolume, setAudioVolume] = useState<number>(80);
   const [showAISettings, setShowAISettings] = useState<boolean>(false);
@@ -121,24 +126,24 @@ export default function TikTokLiveStream() {
         transports: ['polling', 'websocket'],
         reconnection: true,
         reconnectionAttempts: 5,
-        reconnectionDelay: 1000
+        reconnectionDelay: 1000,
       });
 
       socket.on('connect', () => {
         console.log('Socket connected:', socket?.id);
       });
 
-      socket.on('connect_error', (error) => {
+      socket.on('connect_error', error => {
         console.error('Socket connection error:', error);
         setConnectionState({
           isConnected: false,
           isConnecting: false,
-          error: 'Failed to connect to server'
+          error: 'Failed to connect to server',
         });
         toast({
-          title: "Connection Error",
-          description: "Failed to connect to server",
-          variant: "destructive"
+          title: 'Connection Error',
+          description: 'Failed to connect to server',
+          variant: 'destructive',
         });
       });
 
@@ -147,9 +152,9 @@ export default function TikTokLiveStream() {
         setConnectionState(state);
         if (state.error) {
           toast({
-            title: "Connection Error",
+            title: 'Connection Error',
             description: state.error,
-            variant: "destructive"
+            variant: 'destructive',
           });
         }
       });
@@ -159,10 +164,10 @@ export default function TikTokLiveStream() {
         setConnectionState(state);
         if (state.isConnected) {
           toast({
-            title: "Connected!",
-            description: `Successfully connected to @${username}'s live stream`
+            title: 'Connected!',
+            description: `Successfully connected to @${username}'s live stream`,
           });
-          
+
           // Send AI configuration
           if (socket) {
             socket.emit('updateAIConfig', aiConfig);
@@ -174,8 +179,8 @@ export default function TikTokLiveStream() {
         console.log('TikTok disconnected:', state);
         setConnectionState(state);
         toast({
-          title: "Disconnected",
-          description: `Disconnected from @${username}'s live stream`
+          title: 'Disconnected',
+          description: `Disconnected from @${username}'s live stream`,
         });
       });
 
@@ -183,7 +188,7 @@ export default function TikTokLiveStream() {
       socket.on('aiResponse', (response: AIResponse) => {
         console.log('AI response:', response);
         setAiResponses(prev => [...prev, response].slice(-50)); // Keep last 50 responses
-        
+
         // Play audio if available
         if (response.audioUrl && !isAudioPlaying) {
           setCurrentAudio(response.audioUrl);
@@ -198,7 +203,8 @@ export default function TikTokLiveStream() {
 
       // Handle gifts
       socket.on('gift', (data: TikTokGift) => {
-        if (data.diamondCount > 0) { // Only track gifts that cost diamonds
+        if (data.diamondCount > 0) {
+          // Only track gifts that cost diamonds
           setGifts(prev => [...prev, data].slice(-50)); // Keep last 50 gifts
         }
       });
@@ -271,14 +277,14 @@ export default function TikTokLiveStream() {
       const audioEl = audioPlayerRef.current.audioEl.current;
       if (audioEl) {
         audioEl.volume = audioVolume / 100;
-        
+
         // Set up event listeners
         const handleEnded = () => {
           setIsAudioPlaying(false);
           setCurrentAudio(null);
         };
         audioEl.addEventListener('ended', handleEnded);
-        
+
         // Clean up
         return () => {
           audioEl.removeEventListener('ended', handleEnded);
@@ -301,11 +307,11 @@ export default function TikTokLiveStream() {
     setViewerCount(0);
     setTotalLikes(0);
     setAiResponses([]);
-    
+
     setConnectionState({
       isConnected: false,
       isConnecting: true,
-      error: null
+      error: null,
     });
 
     // Emit connectToUser event with username
@@ -320,7 +326,7 @@ export default function TikTokLiveStream() {
     setConnectionState({
       isConnected: false,
       isConnecting: false,
-      error: null
+      error: null,
     });
 
     // Reset all states
@@ -337,8 +343,8 @@ export default function TikTokLiveStream() {
     setIsAudioPlaying(false);
 
     toast({
-      title: "Disconnected",
-      description: "You've disconnected from the live stream"
+      title: 'Disconnected',
+      description: "You've disconnected from the live stream",
     });
   };
 
@@ -349,13 +355,13 @@ export default function TikTokLiveStream() {
   const updateAIConfig = (newConfig: Partial<AIConfig>) => {
     const updatedConfig = { ...aiConfig, ...newConfig };
     setAiConfig(updatedConfig);
-    
+
     if (socket && connectionState.isConnected) {
       socket.emit('updateAIConfig', updatedConfig);
-      
+
       toast({
-        title: "AI Settings Updated",
-        description: "Your AI response settings have been updated"
+        title: 'AI Settings Updated',
+        description: 'Your AI response settings have been updated',
       });
     }
   };
@@ -399,9 +405,7 @@ export default function TikTokLiveStream() {
       <Card>
         <CardHeader>
           <CardTitle>Connect to TikTok Live</CardTitle>
-          <CardDescription>
-            Enter a TikTok username to connect to their live stream
-          </CardDescription>
+          <CardDescription>Enter a TikTok username to connect to their live stream</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex space-x-2">
@@ -409,15 +413,12 @@ export default function TikTokLiveStream() {
               <Input
                 placeholder="TikTok username (without @)"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={e => setUsername(e.target.value)}
                 disabled={connectionState.isConnected || connectionState.isConnecting}
               />
             </div>
             {!connectionState.isConnected ? (
-              <Button 
-                onClick={connectToUser} 
-                disabled={connectionState.isConnecting || !username}
-              >
+              <Button onClick={connectToUser} disabled={connectionState.isConnecting || !username}>
                 {connectionState.isConnecting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -431,15 +432,12 @@ export default function TikTokLiveStream() {
                 )}
               </Button>
             ) : (
-              <Button 
-                variant="destructive" 
-                onClick={disconnectFromLiveStream}
-              >
+              <Button variant="destructive" onClick={disconnectFromLiveStream}>
                 Disconnect
               </Button>
             )}
           </div>
-          
+
           {connectionState.error && (
             <div className="mt-4 p-3 bg-destructive/10 text-destructive rounded-md flex items-start">
               <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
@@ -449,23 +447,30 @@ export default function TikTokLiveStream() {
               </div>
             </div>
           )}
-          
+
           {connectionState.isConnected && (
             <div className="mt-4 flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-200">
+                <Badge
+                  variant="outline"
+                  className="bg-green-500/10 text-green-600 border-green-200"
+                >
                   Connected to @{username}
                 </Badge>
                 <div className="flex items-center">
                   <Users className="h-4 w-4 mr-1 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">{viewerCount.toLocaleString()} viewers</span>
+                  <span className="text-sm text-muted-foreground">
+                    {viewerCount.toLocaleString()} viewers
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <Heart className="h-4 w-4 mr-1 text-pink-500" />
-                  <span className="text-sm text-muted-foreground">{totalLikes.toLocaleString()} likes</span>
+                  <span className="text-sm text-muted-foreground">
+                    {totalLikes.toLocaleString()} likes
+                  </span>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   {isAudioPlaying ? (
@@ -478,13 +483,13 @@ export default function TikTokLiveStream() {
                     max={100}
                     step={1}
                     className="w-24"
-                    onValueChange={(value) => setAudioVolume(value[0])}
+                    onValueChange={value => setAudioVolume(value[0])}
                   />
                 </div>
 
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setShowAISettings(!showAISettings)}
                 >
                   <BrainCircuit className="h-4 w-4 mr-2" />
@@ -493,7 +498,7 @@ export default function TikTokLiveStream() {
               </div>
             </div>
           )}
-          
+
           {/* AI Settings Panel */}
           {showAISettings && connectionState.isConnected && (
             <div className="mt-4 p-4 border rounded-md space-y-4">
@@ -504,12 +509,12 @@ export default function TikTokLiveStream() {
                 </div>
                 <Switch
                   checked={aiConfig.enableAIResponses}
-                  onCheckedChange={(checked) => updateAIConfig({ enableAIResponses: checked })}
+                  onCheckedChange={checked => updateAIConfig({ enableAIResponses: checked })}
                 />
               </div>
-              
+
               <Separator />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -517,82 +522,80 @@ export default function TikTokLiveStream() {
                     <Switch
                       id="comments"
                       checked={aiConfig.respondToComments}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToComments: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToComments: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="gifts">Respond to Gifts</Label>
                     <Switch
                       id="gifts"
                       checked={aiConfig.respondToGifts}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToGifts: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToGifts: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="likes">Respond to Likes</Label>
                     <Switch
                       id="likes"
                       checked={aiConfig.respondToLikes}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToLikes: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToLikes: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="follows">Respond to Follows</Label>
                     <Switch
                       id="follows"
                       checked={aiConfig.respondToFollows}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToFollows: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToFollows: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="shares">Respond to Shares</Label>
                     <Switch
                       id="shares"
                       checked={aiConfig.respondToShares}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToShares: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToShares: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="joins">Respond to Joins</Label>
                     <Switch
                       id="joins"
                       checked={aiConfig.respondToJoins}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToJoins: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToJoins: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="purchases">Respond to Purchases</Label>
                     <Switch
                       id="purchases"
                       checked={aiConfig.respondToPurchases}
-                      onCheckedChange={(checked) => updateAIConfig({ respondToPurchases: checked })}
+                      onCheckedChange={checked => updateAIConfig({ respondToPurchases: checked })}
                       disabled={!aiConfig.enableAIResponses}
                     />
                   </div>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="giftThreshold">
-                    Minimum Gift Value (diamonds)
-                  </Label>
+                  <Label htmlFor="giftThreshold">Minimum Gift Value (diamonds)</Label>
                   <div className="flex items-center space-x-2">
                     <Slider
                       id="giftThreshold"
@@ -600,16 +603,14 @@ export default function TikTokLiveStream() {
                       max={100}
                       step={1}
                       disabled={!aiConfig.enableAIResponses || !aiConfig.respondToGifts}
-                      onValueChange={(value) => updateAIConfig({ giftThreshold: value[0] })}
+                      onValueChange={value => updateAIConfig({ giftThreshold: value[0] })}
                     />
                     <span className="w-12 text-center">{aiConfig.giftThreshold}</span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
-                  <Label htmlFor="likeThreshold">
-                    Minimum Like Count
-                  </Label>
+                  <Label htmlFor="likeThreshold">Minimum Like Count</Label>
                   <div className="flex items-center space-x-2">
                     <Slider
                       id="likeThreshold"
@@ -617,16 +618,14 @@ export default function TikTokLiveStream() {
                       max={20}
                       step={1}
                       disabled={!aiConfig.enableAIResponses || !aiConfig.respondToLikes}
-                      onValueChange={(value) => updateAIConfig({ likeThreshold: value[0] })}
+                      onValueChange={value => updateAIConfig({ likeThreshold: value[0] })}
                     />
                     <span className="w-12 text-center">{aiConfig.likeThreshold}</span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 col-span-2">
-                  <Label htmlFor="joinResponseRate">
-                    Join Response Rate (%)
-                  </Label>
+                  <Label htmlFor="joinResponseRate">Join Response Rate (%)</Label>
                   <div className="flex items-center space-x-2">
                     <Slider
                       id="joinResponseRate"
@@ -634,7 +633,7 @@ export default function TikTokLiveStream() {
                       max={100}
                       step={5}
                       disabled={!aiConfig.enableAIResponses || !aiConfig.respondToJoins}
-                      onValueChange={(value) => updateAIConfig({ joinResponseRate: value[0] })}
+                      onValueChange={value => updateAIConfig({ joinResponseRate: value[0] })}
                     />
                     <span className="w-12 text-center">{aiConfig.joinResponseRate}%</span>
                   </div>
@@ -677,7 +676,7 @@ export default function TikTokLiveStream() {
               <span>AI Responses</span>
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="comments">
             <Card>
               <CardHeader>
@@ -708,8 +707,12 @@ export default function TikTokLiveStream() {
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center">
                               <p className="font-medium text-sm">{comment.nickname}</p>
-                              <span className="text-xs text-muted-foreground ml-2">@{comment.uniqueId}</span>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(comment.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                @{comment.uniqueId}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(comment.timestamp)}
+                              </span>
                             </div>
                             <p>{comment.comment}</p>
                           </div>
@@ -725,7 +728,7 @@ export default function TikTokLiveStream() {
               </CardFooter>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="gifts">
             <Card>
               <CardHeader>
@@ -733,9 +736,7 @@ export default function TikTokLiveStream() {
                   <Gift className="h-5 w-5 mr-2" />
                   <span>Gifts</span>
                 </CardTitle>
-                <CardDescription>
-                  Gifts sent by viewers during the live stream
-                </CardDescription>
+                <CardDescription>Gifts sent by viewers during the live stream</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px] pr-4">
@@ -756,11 +757,17 @@ export default function TikTokLiveStream() {
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center">
                               <p className="font-medium text-sm">{gift.nickname}</p>
-                              <span className="text-xs text-muted-foreground ml-2">@{gift.uniqueId}</span>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(gift.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                @{gift.uniqueId}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(gift.timestamp)}
+                              </span>
                             </div>
                             <div className="flex items-center">
-                              <p>Sent <span className="font-medium">{gift.giftName}</span></p>
+                              <p>
+                                Sent <span className="font-medium">{gift.giftName}</span>
+                              </p>
                               {gift.repeatCount > 1 && (
                                 <Badge variant="outline" className="ml-2">
                                   x{gift.repeatCount}
@@ -782,7 +789,7 @@ export default function TikTokLiveStream() {
               </CardFooter>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="likes">
             <Card>
               <CardHeader>
@@ -790,9 +797,7 @@ export default function TikTokLiveStream() {
                   <Heart className="h-5 w-5 mr-2" />
                   <span>Likes</span>
                 </CardTitle>
-                <CardDescription>
-                  Likes received during the live stream
-                </CardDescription>
+                <CardDescription>Likes received during the live stream</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px] pr-4">
@@ -813,11 +818,18 @@ export default function TikTokLiveStream() {
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center">
                               <p className="font-medium text-sm">{like.nickname}</p>
-                              <span className="text-xs text-muted-foreground ml-2">@{like.uniqueId}</span>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(like.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                @{like.uniqueId}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(like.timestamp)}
+                              </span>
                             </div>
                             <div className="flex items-center">
-                              <p>Sent <span className="font-medium">{like.likeCount}</span> {like.likeCount === 1 ? 'like' : 'likes'}</p>
+                              <p>
+                                Sent <span className="font-medium">{like.likeCount}</span>{' '}
+                                {like.likeCount === 1 ? 'like' : 'likes'}
+                              </p>
                               <Heart className="h-4 w-4 ml-2 text-pink-500 fill-pink-500" />
                             </div>
                           </div>
@@ -840,9 +852,7 @@ export default function TikTokLiveStream() {
                   <Share className="h-5 w-5 mr-2" />
                   <span>Shares</span>
                 </CardTitle>
-                <CardDescription>
-                  Users who shared the live stream
-                </CardDescription>
+                <CardDescription>Users who shared the live stream</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px] pr-4">
@@ -850,7 +860,9 @@ export default function TikTokLiveStream() {
                     <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                       <Share className="h-12 w-12 mb-2 opacity-20" />
                       <p>No shares yet</p>
-                      <p className="text-sm">Shares will appear here when viewers share the stream</p>
+                      <p className="text-sm">
+                        Shares will appear here when viewers share the stream
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -863,8 +875,12 @@ export default function TikTokLiveStream() {
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center">
                               <p className="font-medium text-sm">{share.nickname}</p>
-                              <span className="text-xs text-muted-foreground ml-2">@{share.uniqueId}</span>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(share.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                @{share.uniqueId}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(share.timestamp)}
+                              </span>
                             </div>
                             <p>Shared the stream</p>
                           </div>
@@ -887,9 +903,7 @@ export default function TikTokLiveStream() {
                   <UserPlus className="h-5 w-5 mr-2" />
                   <span>Follows</span>
                 </CardTitle>
-                <CardDescription>
-                  New followers during the live stream
-                </CardDescription>
+                <CardDescription>New followers during the live stream</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px] pr-4">
@@ -910,8 +924,12 @@ export default function TikTokLiveStream() {
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center">
                               <p className="font-medium text-sm">{follow.nickname}</p>
-                              <span className="text-xs text-muted-foreground ml-2">@{follow.uniqueId}</span>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(follow.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                @{follow.uniqueId}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(follow.timestamp)}
+                              </span>
                             </div>
                             <p>Started following</p>
                           </div>
@@ -934,9 +952,7 @@ export default function TikTokLiveStream() {
                   <UserPlus2 className="h-5 w-5 mr-2" />
                   <span>Member Joins</span>
                 </CardTitle>
-                <CardDescription>
-                  Users who joined the live stream
-                </CardDescription>
+                <CardDescription>Users who joined the live stream</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px] pr-4">
@@ -957,8 +973,12 @@ export default function TikTokLiveStream() {
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center">
                               <p className="font-medium text-sm">{member.nickname}</p>
-                              <span className="text-xs text-muted-foreground ml-2">@{member.uniqueId}</span>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(member.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                @{member.uniqueId}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(member.timestamp)}
+                              </span>
                             </div>
                             <p>Joined the stream</p>
                             {member.joinType && (
@@ -996,7 +1016,9 @@ export default function TikTokLiveStream() {
                     <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                       <BrainCircuit className="h-12 w-12 mb-2 opacity-20" />
                       <p>No AI responses yet</p>
-                      <p className="text-sm">AI responses will appear here when the assistant responds to events</p>
+                      <p className="text-sm">
+                        AI responses will appear here when the assistant responds to events
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -1012,13 +1034,16 @@ export default function TikTokLiveStream() {
                                 {getEventIcon(response.event)}
                                 <span className="capitalize text-xs">{response.event}</span>
                               </Badge>
-                              <span className="text-xs text-muted-foreground ml-auto">{formatTimestamp(response.timestamp)}</span>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {formatTimestamp(response.timestamp)}
+                              </span>
                             </div>
                             <div className="bg-blue-50 dark:bg-blue-950/50 p-3 rounded-lg">
                               <p>{response.text}</p>
                               {response.userData && (
                                 <p className="text-xs text-muted-foreground mt-1">
-                                  In response to @{response.userData.uniqueId} ({response.userData.nickname})
+                                  In response to @{response.userData.uniqueId} (
+                                  {response.userData.nickname})
                                 </p>
                               )}
                             </div>
@@ -1038,7 +1063,7 @@ export default function TikTokLiveStream() {
                   <Switch
                     id="enableAI"
                     checked={aiConfig.enableAIResponses}
-                    onCheckedChange={(checked) => updateAIConfig({ enableAIResponses: checked })}
+                    onCheckedChange={checked => updateAIConfig({ enableAIResponses: checked })}
                   />
                   <Label htmlFor="enableAI">Enable AI Responses</Label>
                 </div>

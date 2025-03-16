@@ -22,7 +22,7 @@ export function useUser() {
         setUser({
           id: 'user-1',
           email: 'user@example.com',
-          name: 'Demo User'
+          name: 'Demo User',
         });
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch user'));
@@ -38,6 +38,6 @@ export function useUser() {
     user,
     loading,
     error,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
   };
-} 
+}

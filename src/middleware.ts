@@ -9,13 +9,11 @@ export function middleware(request: NextRequest) {
     // The actual initialization happens in the socket route handler
     console.log('Socket.IO middleware triggered');
   }
-  
+
   return NextResponse.next();
 }
 
 // Configure which paths this middleware is applied to
 export const config = {
-  matcher: [
-    '/api/socket/:path*',
-  ],
-} 
+  matcher: ['/api/socket/:path*'],
+};

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { TikTokAnalytics } from '@/types/tiktok';
@@ -18,7 +18,7 @@ interface UseTikTokAnalyticsReturn {
 
 export function useTikTokAnalytics({
   username = '',
-  daysToAnalyze = 30
+  daysToAnalyze = 30,
 }: UseTikTokAnalyticsProps = {}): UseTikTokAnalyticsReturn {
   const [analytics, setAnalytics] = useState<TikTokAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -59,6 +59,6 @@ export function useTikTokAnalytics({
     analytics,
     isLoading,
     error,
-    refreshAnalytics
+    refreshAnalytics,
   };
-} 
+}

@@ -2,16 +2,16 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import Link from 'next/link';
-import { 
-  LayoutDashboard, 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Facebook,
+  Twitter,
+  Instagram,
+  Settings,
   HelpCircle,
   Menu,
   X,
-  Key
+  Key,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -22,7 +22,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [open, setOpen] = React.useState(false);
-  
+
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Facebook Crawler', href: '/dashboard/crawlers/facebook', icon: Facebook },
@@ -30,13 +30,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     { name: 'Instagram Crawler', href: '/dashboard/crawlers/instagram', icon: Instagram },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
     { name: 'Help', href: '/dashboard/help', icon: HelpCircle },
-    { 
-      name: 'API Access Tokens', 
-      href: '/dashboard/help/access-tokens', 
-      icon: Key 
+    {
+      name: 'API Access Tokens',
+      href: '/dashboard/help/access-tokens',
+      icon: Key,
     },
   ];
-  
+
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile Navigation */}
@@ -54,9 +54,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
             <nav className="flex-1 p-4">
               <ul className="space-y-2">
-                {navItems.map((item) => (
+                {navItems.map(item => (
                   <li key={item.name}>
-                    <Link 
+                    <Link
                       href={item.href}
                       className="flex items-center p-2 rounded-md hover:bg-accent transition-colors"
                       onClick={() => setOpen(false)}
@@ -71,7 +71,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </SheetContent>
       </Sheet>
-      
+
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
         <div className="flex flex-col flex-1 min-h-0 border-r bg-card">
@@ -80,7 +80,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
             <nav className="flex-1 px-3 space-y-1">
-              {navItems.map((item) => (
+              {navItems.map(item => (
                 <Link
                   key={item.name}
                   href={item.href}
@@ -98,13 +98,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="lg:pl-64">
         <main className="py-10">
-          <div className="px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
+          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </div>

@@ -1,17 +1,54 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@/lib/auth';
-import { PlatformCredential, getCredentialsByUser, saveCredential, updateCredential, deleteCredential } from '@/lib/credentials-store';
+import {
+  PlatformCredential,
+  getCredentialsByUser,
+  saveCredential,
+  updateCredential,
+  deleteCredential,
+} from '@/lib/credentials-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Facebook, Twitter, Instagram, Trash2, Edit, Plus, Key, RefreshCw, AlertCircle } from 'lucide-react';
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Trash2,
+  Edit,
+  Plus,
+  Key,
+  RefreshCw,
+  AlertCircle,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 
@@ -20,7 +57,7 @@ export function CredentialsManager() {
   const [credentials, setCredentials] = useState<PlatformCredential[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Form state
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,15 +68,15 @@ export function CredentialsManager() {
     token: '',
     tokenSecret: '',
   });
-  
+
   // Load credentials on component mount
   useEffect(() => {
     if (!user) return;
-    
+
     const loadCredentials = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const userCredentials = await getCredentialsByUser(user.id);
         setCredentials(userCredentials);
@@ -50,10 +87,10 @@ export function CredentialsManager() {
         setLoading(false);
       }
     };
-    
+
     loadCredentials();
   }, [user]);
-  
+
   const handleOpenForm = (credential?: PlatformCredential) => {
     if (credential) {
       // Edit mode
@@ -76,28 +113,28 @@ export function CredentialsManager() {
         tokenSecret: '',
       });
     }
-    
+
     setIsOpen(true);
   };
-  
+
   const handleCloseForm = () => {
     setIsOpen(false);
   };
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleSelectChange = (value: string) => {
     setFormData(prev => ({ ...prev, platform: value as PlatformCredential['platform'] }));
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user) return;
-    
+
     try {
       if (isEditing && currentCredential) {
         // Update existing credential
@@ -106,13 +143,11 @@ export function CredentialsManager() {
           token: formData.token,
           tokenSecret: formData.tokenSecret || undefined,
         });
-        
-        setCredentials(prev => 
-          prev.map(cred => cred.id === updated?.id ? updated : cred)
-        );
-        
+
+        setCredentials(prev => prev.map(cred => (cred.id === updated?.id ? updated : cred)));
+
         toast({
-          title: "Credential updated",
+          title: 'Credential updated',
           description: `Your ${formData.platform} credential "${formData.name}" has been updated.`,
         });
       } else {
@@ -124,47 +159,47 @@ export function CredentialsManager() {
           token: formData.token,
           tokenSecret: formData.tokenSecret || undefined,
         });
-        
+
         setCredentials(prev => [...prev, newCredential]);
-        
+
         toast({
-          title: "Credential saved",
+          title: 'Credential saved',
           description: `Your ${formData.platform} credential "${formData.name}" has been saved.`,
         });
       }
-      
+
       handleCloseForm();
     } catch (err) {
       console.error('Error saving credential:', err);
       toast({
-        variant: "destructive",
-        title: "Error saving credential",
-        description: "There was a problem saving your credential. Please try again.",
+        variant: 'destructive',
+        title: 'Error saving credential',
+        description: 'There was a problem saving your credential. Please try again.',
       });
     }
   };
-  
+
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this credential?")) return;
-    
+    if (!confirm('Are you sure you want to delete this credential?')) return;
+
     try {
       await deleteCredential(id);
       setCredentials(prev => prev.filter(cred => cred.id !== id));
-      
+
       toast({
-        title: "Credential deleted",
-        description: "Your credential has been deleted.",
+        title: 'Credential deleted',
+        description: 'Your credential has been deleted.',
       });
     } catch (err) {
       console.error('Error deleting credential:', err);
       toast({
-        variant: "destructive",
-        title: "Error deleting credential",
-        description: "There was a problem deleting your credential. Please try again.",
+        variant: 'destructive',
+        title: 'Error deleting credential',
+        description: 'There was a problem deleting your credential. Please try again.',
       });
     }
   };
-  
+
   const getPlatformIcon = (platform: PlatformCredential['platform']) => {
     switch (platform) {
       case 'facebook':
@@ -177,7 +212,7 @@ export function CredentialsManager() {
         return <Key className="h-5 w-5" />;
     }
   };
-  
+
   if (loading) {
     return (
       <Card>
@@ -191,7 +226,7 @@ export function CredentialsManager() {
       </Card>
     );
   }
-  
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -212,7 +247,7 @@ export function CredentialsManager() {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        
+
         {credentials.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Key className="h-12 w-12 mx-auto mb-4 opacity-20" />
@@ -227,11 +262,14 @@ export function CredentialsManager() {
               <TabsTrigger value="twitter">Twitter</TabsTrigger>
               <TabsTrigger value="instagram">Instagram</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="all">
               <div className="space-y-4">
                 {credentials.map(credential => (
-                  <div key={credential.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={credential.id}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
                     <div className="flex items-center">
                       {getPlatformIcon(credential.platform)}
                       <div className="ml-4">
@@ -243,10 +281,18 @@ export function CredentialsManager() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge>{credential.platform}</Badge>
-                      <Button variant="ghost" size="icon" onClick={() => handleOpenForm(credential)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleOpenForm(credential)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(credential.id)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(credential.id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -254,14 +300,17 @@ export function CredentialsManager() {
                 ))}
               </div>
             </TabsContent>
-            
+
             {['facebook', 'twitter', 'instagram'].map(platform => (
               <TabsContent key={platform} value={platform}>
                 <div className="space-y-4">
                   {credentials
                     .filter(cred => cred.platform === platform)
                     .map(credential => (
-                      <div key={credential.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div
+                        key={credential.id}
+                        className="flex items-center justify-between p-4 border rounded-lg"
+                      >
                         <div className="flex items-center">
                           {getPlatformIcon(credential.platform)}
                           <div className="ml-4">
@@ -272,16 +321,24 @@ export function CredentialsManager() {
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleOpenForm(credential)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenForm(credential)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(credential.id)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(credential.id)}
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     ))}
-                  
+
                   {credentials.filter(cred => cred.platform === platform).length === 0 && (
                     <div className="text-center py-8 text-muted-foreground">
                       <p>No {platform} credentials found.</p>
@@ -293,18 +350,18 @@ export function CredentialsManager() {
           </Tabs>
         )}
       </CardContent>
-      
+
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{isEditing ? 'Edit Credential' : 'Add New Credential'}</DialogTitle>
             <DialogDescription>
-              {isEditing 
-                ? 'Update your API credential details below.' 
+              {isEditing
+                ? 'Update your API credential details below.'
                 : 'Enter your API credential details to save for future use.'}
             </DialogDescription>
           </DialogHeader>
-          
+
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
               {!isEditing && (
@@ -312,8 +369,8 @@ export function CredentialsManager() {
                   <Label htmlFor="platform" className="text-right">
                     Platform
                   </Label>
-                  <Select 
-                    value={formData.platform} 
+                  <Select
+                    value={formData.platform}
                     onValueChange={handleSelectChange}
                     disabled={isEditing}
                   >
@@ -329,7 +386,7 @@ export function CredentialsManager() {
                   </Select>
                 </div>
               )}
-              
+
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Name
@@ -344,7 +401,7 @@ export function CredentialsManager() {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="accessToken" className="text-right">
                   Access Token
@@ -360,7 +417,7 @@ export function CredentialsManager() {
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="refreshToken" className="text-right">
                   Refresh Token
@@ -376,18 +433,16 @@ export function CredentialsManager() {
                 />
               </div>
             </div>
-            
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleCloseForm}>
                 Cancel
               </Button>
-              <Button type="submit">
-                {isEditing ? 'Update' : 'Save'}
-              </Button>
+              <Button type="submit">{isEditing ? 'Update' : 'Save'}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
     </Card>
   );
-} 
+}

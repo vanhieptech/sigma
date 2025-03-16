@@ -38,23 +38,27 @@ export class AIVoiceManager {
       voice: 'nova',
       model: 'tts-1-hd',
       speed: 1.0,
-      responseStyle: 'friendly'
+      responseStyle: 'friendly',
     },
-    productKnowledge: 'I can help customers find products they are looking for and answer questions about our store.',
+    productKnowledge:
+      'I can help customers find products they are looking for and answer questions about our store.',
     greetingTemplate: 'Hello {{username}}, welcome to the stream! How can I help you today?',
     purchaseTemplate: 'Thank you {{username}} for purchasing {{product}}! Great choice!',
     likeTemplate: 'Thanks for the likes {{username}}! Your support means a lot to us!',
     giftTemplate: 'Wow! Thank you {{username}} for the amazing gift! We really appreciate it!',
-    joinTemplate: 'Welcome {{username}} to our live stream! Feel free to ask any questions about our products!',
-    questionTemplate: '{{answer}}'
+    joinTemplate:
+      'Welcome {{username}} to our live stream! Feel free to ask any questions about our products!',
+    questionTemplate: '{{answer}}',
   };
 
   private constructor(apiKey?: string) {
     if (!apiKey && !process.env.OPENAI_API_KEY) {
-      throw new Error('OpenAI API key is required. Please set OPENAI_API_KEY in your environment variables.');
+      throw new Error(
+        'OpenAI API key is required. Please set OPENAI_API_KEY in your environment variables.'
+      );
     }
     this.openai = new OpenAI({
-      apiKey: apiKey || process.env.OPENAI_API_KEY
+      apiKey: apiKey || process.env.OPENAI_API_KEY,
     });
   }
 
@@ -76,8 +80,8 @@ export class AIVoiceManager {
   public async generateTextResponse(storeId: string, event: string, data: any): Promise<string> {
     const personality = this.getPersonality(storeId);
     let template = '';
-    
-    switch(event) {
+
+    switch (event) {
       case 'join':
         template = personality.joinTemplate;
         break;
@@ -111,7 +115,7 @@ export class AIVoiceManager {
 
   private async generateAIAnswer(storeId: string, question: string): Promise<string> {
     const personality = this.getPersonality(storeId);
-    
+
     try {
       const completion = await this.openai.chat.completions.create({
         messages: [
@@ -121,28 +125,30 @@ export class AIVoiceManager {
             Your responses should be in a ${personality.voiceSettings.responseStyle} tone.
             Keep answers concise, helpful, and suitable for live stream audience.
             If asked about products, provide enthusiastic but honest answers.
-            If you don't know something, suggest asking for specific details.`
+            If you don't know something, suggest asking for specific details.`,
           },
           {
             role: 'user',
-            content: question
-          }
+            content: question,
+          },
         ],
         model: 'gpt-3.5-turbo',
-        max_tokens: 150
+        max_tokens: 150,
       });
 
-      return completion.choices[0]?.message?.content || 'I apologize, I couldn\'t process that question.';
+      return (
+        completion.choices[0]?.message?.content || "I apologize, I couldn't process that question."
+      );
     } catch (error) {
       console.error('Error generating AI answer:', error);
-      return 'I apologize, I\'m having trouble processing that question right now.';
+      return "I apologize, I'm having trouble processing that question right now.";
     }
   }
 
   public async textToSpeech(storeId: string, text: string): Promise<AIResponse> {
     const personality = this.getPersonality(storeId);
     const { voice, model, speed } = personality.voiceSettings;
-    
+
     try {
       const mp3 = await this.openai.audio.speech.create({
         model: model,
@@ -154,15 +160,15 @@ export class AIVoiceManager {
       const buffer = Buffer.from(await mp3.arrayBuffer());
       // In a real implementation, you would save this buffer to a file or stream it
       // For now, we're just returning a mock URL
-      
+
       return {
         text,
         audioUrl: 'mock-audio-url.mp3', // This would be a real URL in production
-        duration: buffer.length / 16000 // Rough estimate of audio duration in seconds
+        duration: buffer.length / 16000, // Rough estimate of audio duration in seconds
       };
     } catch (error) {
       console.error('Error generating TTS:', error);
       return { text };
     }
   }
-} 
+}

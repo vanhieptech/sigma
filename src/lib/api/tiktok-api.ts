@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { 
-  TikTokAnalytics, 
-  TikTokHashtag, 
-  TikTokSound, 
-  TikTokContentIdea, 
-  TikTokUserProfile 
+import {
+  TikTokAnalytics,
+  TikTokHashtag,
+  TikTokSound,
+  TikTokContentIdea,
+  TikTokUserProfile,
 } from '@/types/tiktok';
 import {
   getMockAnalytics,
   getTrendingHashtags,
   getTrendingSounds,
-  getRandomUserProfile
+  getRandomUserProfile,
 } from '@/lib/mock/tiktok-data';
 
 // API endpoints
@@ -21,14 +21,18 @@ const TRENDING_ENDPOINT = `${API_BASE_URL}/api/trending`;
 const PROFILE_ENDPOINT = `${API_BASE_URL}/api/profile`;
 
 // Helper for API requests
-async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 5000): Promise<Response> {
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit = {},
+  timeout = 5000
+): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-  
+
   try {
     const response = await fetch(url, {
       ...options,
-      signal: controller.signal
+      signal: controller.signal,
     });
     clearTimeout(id);
     return response;
@@ -39,7 +43,10 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout 
 }
 
 // Get TikTok analytics data
-export async function getTikTokAnalytics(username: string, days: number = 30): Promise<TikTokAnalytics> {
+export async function getTikTokAnalytics(
+  username: string,
+  days: number = 30
+): Promise<TikTokAnalytics> {
   try {
     // Try to fetch from real API
     if (API_BASE_URL) {
@@ -47,7 +54,7 @@ export async function getTikTokAnalytics(username: string, days: number = 30): P
         `${ANALYTICS_ENDPOINT}?username=${encodeURIComponent(username)}&days=${days}`,
         { method: 'GET' }
       );
-      
+
       if (response.ok) {
         const data = await response.json();
         return data as TikTokAnalytics;
@@ -56,7 +63,7 @@ export async function getTikTokAnalytics(username: string, days: number = 30): P
   } catch (error) {
     console.error('Error fetching TikTok analytics:', error);
   }
-  
+
   // Fall back to mock data
   console.info('Using mock TikTok analytics data');
   return getMockAnalytics(days);
@@ -67,12 +74,13 @@ export async function getTikTokTrendingHashtags(category?: string): Promise<TikT
   try {
     // Try to fetch from real API
     if (API_BASE_URL) {
-      const url = category && category !== 'all' 
-        ? `${TRENDING_ENDPOINT}/hashtags?category=${encodeURIComponent(category)}`
-        : `${TRENDING_ENDPOINT}/hashtags`;
-      
+      const url =
+        category && category !== 'all'
+          ? `${TRENDING_ENDPOINT}/hashtags?category=${encodeURIComponent(category)}`
+          : `${TRENDING_ENDPOINT}/hashtags`;
+
       const response = await fetchWithTimeout(url, { method: 'GET' });
-      
+
       if (response.ok) {
         const data = await response.json();
         return data as TikTokHashtag[];
@@ -81,18 +89,18 @@ export async function getTikTokTrendingHashtags(category?: string): Promise<TikT
   } catch (error) {
     console.error('Error fetching TikTok trending hashtags:', error);
   }
-  
+
   // Fall back to mock data
   console.info('Using mock TikTok trending hashtags data');
   const allHashtags = getTrendingHashtags();
-  
+
   // Filter by category if specified
   if (category && category !== 'all') {
-    return allHashtags.filter(hashtag => 
+    return allHashtags.filter(hashtag =>
       hashtag.name.toLowerCase().includes(category.toLowerCase())
     );
   }
-  
+
   return allHashtags;
 }
 
@@ -101,12 +109,13 @@ export async function getTikTokTrendingSounds(category?: string): Promise<TikTok
   try {
     // Try to fetch from real API
     if (API_BASE_URL) {
-      const url = category && category !== 'all' 
-        ? `${TRENDING_ENDPOINT}/sounds?category=${encodeURIComponent(category)}`
-        : `${TRENDING_ENDPOINT}/sounds`;
-      
+      const url =
+        category && category !== 'all'
+          ? `${TRENDING_ENDPOINT}/sounds?category=${encodeURIComponent(category)}`
+          : `${TRENDING_ENDPOINT}/sounds`;
+
       const response = await fetchWithTimeout(url, { method: 'GET' });
-      
+
       if (response.ok) {
         const data = await response.json();
         return data as TikTokSound[];
@@ -115,33 +124,34 @@ export async function getTikTokTrendingSounds(category?: string): Promise<TikTok
   } catch (error) {
     console.error('Error fetching TikTok trending sounds:', error);
   }
-  
+
   // Fall back to mock data
   console.info('Using mock TikTok trending sounds data');
   const allSounds = getTrendingSounds();
-  
+
   // For mock data, just simulate category filtering
   if (category && category !== 'all') {
     return allSounds.filter((_, index) => index % 2 === 0);
   }
-  
+
   return allSounds;
 }
 
 // Get TikTok content ideas based on trending data
 export async function getTikTokContentIdeas(
-  category?: string, 
+  category?: string,
   count: number = 5
 ): Promise<TikTokContentIdea[]> {
   try {
     // Try to fetch from real API
     if (API_BASE_URL) {
-      const url = category && category !== 'all' 
-        ? `${TRENDING_ENDPOINT}/content-ideas?category=${encodeURIComponent(category)}&count=${count}`
-        : `${TRENDING_ENDPOINT}/content-ideas?count=${count}`;
-      
+      const url =
+        category && category !== 'all'
+          ? `${TRENDING_ENDPOINT}/content-ideas?category=${encodeURIComponent(category)}&count=${count}`
+          : `${TRENDING_ENDPOINT}/content-ideas?count=${count}`;
+
       const response = await fetchWithTimeout(url, { method: 'GET' });
-      
+
       if (response.ok) {
         const data = await response.json();
         return data as TikTokContentIdea[];
@@ -150,7 +160,7 @@ export async function getTikTokContentIdeas(
   } catch (error) {
     console.error('Error fetching TikTok content ideas:', error);
   }
-  
+
   // Fall back to mock data
   console.info('Using mock TikTok content ideas data');
   // Generate content ideas using the templates from use-trending-content.ts
@@ -167,7 +177,7 @@ export async function getTikTokUserProfile(username: string): Promise<TikTokUser
         `${PROFILE_ENDPOINT}?username=${encodeURIComponent(username)}`,
         { method: 'GET' }
       );
-      
+
       if (response.ok) {
         const data = await response.json();
         return data as TikTokUserProfile;
@@ -176,10 +186,10 @@ export async function getTikTokUserProfile(username: string): Promise<TikTokUser
   } catch (error) {
     console.error('Error fetching TikTok user profile:', error);
   }
-  
+
   // Fall back to mock data
   console.info('Using mock TikTok user profile data');
   const profile = getRandomUserProfile();
   profile.uniqueId = username;
   return profile;
-} 
+}

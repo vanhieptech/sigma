@@ -7,7 +7,9 @@
     "start:server": "ts-node -r tsconfig-paths/register --project tsconfig.server.json server/index.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -28,7 +30,7 @@
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-progress": "^1.1.2",
     "@radix-ui/react-radio-group": "^1.2.0",
-    "@radix-ui/react-scroll-area": "^1.1.0",
+    "@radix-ui/react-scroll-area": "^1.2.3",
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slider": "^1.2.0",
@@ -53,6 +55,7 @@
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.1",
     "express": "^4.21.2",
+    "framer-motion": "^12.5.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.263.1",
     "next": "13.5.1",
@@ -75,11 +78,13 @@
     "tiktok-live-connector": "^1.2.3",
     "uuid": "^11.1.0",
     "vaul": "^0.9.9",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.9",
+    "prettier": "^3.5.3",
     "protobufjs": "^7.4.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",

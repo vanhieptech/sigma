@@ -8,16 +8,16 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     config.externals.push({
       'utf-8-validate': 'commonjs utf-8-validate',
-      'bufferutil': 'commonjs bufferutil',
-    })
+      bufferutil: 'commonjs bufferutil',
+    });
 
     // Add rule to handle .proto files
     config.module.rules.push({
       test: /\.proto$/,
-      type: 'asset/source'
-    })
+      type: 'asset/source',
+    });
 
-    return config
+    return config;
   },
 };
 

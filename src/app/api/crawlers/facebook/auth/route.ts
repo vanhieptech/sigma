@@ -6,11 +6,11 @@ export async function GET(request: NextRequest) {
     // Handle auth code callback
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    
+
     if (code) {
       // Exchange code for access token
       const accessToken = await exchangeFacebookAuthCode(code);
-      
+
       // Return the access token (in a real app, you'd store this securely)
       return NextResponse.json({ success: true, accessToken });
     } else {
@@ -25,4 +25,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

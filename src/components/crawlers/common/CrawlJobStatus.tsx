@@ -22,7 +22,7 @@ export function CrawlJobStatus({ jobId, platform, onComplete }: CrawlJobStatusPr
       setLoading(true);
       const response = await fetch(`/api/crawlers/${platform}/jobs/${jobId}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setJob(data.job);
         if (data.job.status === 'completed' && onComplete) {
@@ -119,13 +119,11 @@ export function CrawlJobStatus({ jobId, platform, onComplete }: CrawlJobStatusPr
           {getStatusIcon()}
           <span className="font-medium">{getStatusText()}</span>
         </div>
-        <span className="text-sm text-gray-500">
-          Job ID: {job.id.substring(0, 8)}...
-        </span>
+        <span className="text-sm text-gray-500">Job ID: {job.id.substring(0, 8)}...</span>
       </div>
-      
+
       <Progress value={getProgress()} className="h-2 my-2" />
-      
+
       <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
         <div>
           <div className="text-gray-500">Comments</div>
@@ -140,7 +138,7 @@ export function CrawlJobStatus({ jobId, platform, onComplete }: CrawlJobStatusPr
           <div className="font-semibold">{job.stats.hashtagsFound}</div>
         </div>
       </div>
-      
+
       {job.status === 'failed' && (
         <Alert variant="destructive" className="mt-4">
           <AlertCircle className="h-4 w-4" />
@@ -150,4 +148,4 @@ export function CrawlJobStatus({ jobId, platform, onComplete }: CrawlJobStatusPr
       )}
     </div>
   );
-} 
+}

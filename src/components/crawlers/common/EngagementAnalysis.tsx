@@ -2,17 +2,17 @@
 
 import { EngagementAnalysis as EngagementAnalysisType } from '@/types/crawler';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
 } from 'recharts';
 
 interface EngagementAnalysisProps {
@@ -24,7 +24,7 @@ export function EngagementAnalysis({ analysis, loading = false }: EngagementAnal
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[1, 2, 3, 4].map((i) => (
+        {[1, 2, 3, 4].map(i => (
           <Card key={i} className="animate-pulse">
             <CardHeader className="pb-2">
               <div className="h-6 bg-slate-200 rounded w-1/2"></div>
@@ -41,24 +41,24 @@ export function EngagementAnalysis({ analysis, loading = false }: EngagementAnal
   // Prepare data for visualization
   const hashtags = analysis.hashtagAnalysis.slice(0, 10).map(h => ({
     name: `#${h.hashtag}`,
-    value: h.count
+    value: h.count,
   }));
 
   const timeline = analysis.activityTimeline.map(t => ({
     date: new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(t.date),
-    comments: t.commentCount
+    comments: t.commentCount,
   }));
 
   const influencers = analysis.topInfluencers.slice(0, 5).map(i => ({
     name: i.authorName,
     comments: i.commentCount,
-    likes: i.totalLikes
+    likes: i.totalLikes,
   }));
 
   const sentimentData = [
     { name: 'Positive', value: analysis.sentimentBreakdown.positive, color: '#4ade80' },
     { name: 'Neutral', value: analysis.sentimentBreakdown.neutral, color: '#a3a3a3' },
-    { name: 'Negative', value: analysis.sentimentBreakdown.negative, color: '#f87171' }
+    { name: 'Negative', value: analysis.sentimentBreakdown.negative, color: '#f87171' },
   ];
 
   return (
@@ -93,10 +93,7 @@ export function EngagementAnalysis({ analysis, loading = false }: EngagementAnal
         <CardContent>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={timeline}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
+              <BarChart data={timeline} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
@@ -115,10 +112,7 @@ export function EngagementAnalysis({ analysis, loading = false }: EngagementAnal
         <CardContent>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={influencers}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
+              <BarChart data={influencers} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -182,4 +176,4 @@ export function EngagementAnalysis({ analysis, loading = false }: EngagementAnal
       </Card>
     </div>
   );
-} 
+}

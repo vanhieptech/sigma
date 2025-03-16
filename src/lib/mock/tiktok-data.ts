@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import { 
-  TikTokComment, 
-  TikTokGift, 
+import {
+  TikTokComment,
+  TikTokGift,
   TikTokLike,
   TikTokShare,
   TikTokFollow,
   TikTokMember,
-  TikTokViewerCount
+  TikTokViewerCount,
 } from '@/types/tiktok';
 
 // Generate realistic TikTok usernames
@@ -14,10 +14,10 @@ const generateUsername = (): string => {
   const prefixes = ['tiktoker', 'creator', 'user', 'viral', 'trend', 'dancing', 'funny'];
   const suffixes = ['official', 'real', 'original', 'tiktok', ''];
   const numbers = Math.floor(Math.random() * 1000).toString();
-  
+
   const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
   const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-  
+
   return `${prefix}${suffix}${numbers}`;
 };
 
@@ -25,10 +25,10 @@ const generateUsername = (): string => {
 const generateDisplayName = (): string => {
   const firstNames = ['Alex', 'Jordan', 'Taylor', 'Casey', 'Riley', 'Morgan', 'Jamie', 'Avery'];
   const lastNames = ['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson'];
-  
+
   const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
   const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-  
+
   return `${firstName} ${lastName}`;
 };
 
@@ -60,14 +60,14 @@ const generateComment = (): string => {
     'Loving the vibe 💯',
     'You deserve more followers!',
     'This popped up on my FYP!',
-    'Trying this trend tomorrow!'
+    'Trying this trend tomorrow!',
   ];
-  
+
   return comments[Math.floor(Math.random() * comments.length)];
 };
 
 // Generate TikTok gift names
-const generateGift = (): { giftName: string, diamondValue: number, repeatCount: number } => {
+const generateGift = (): { giftName: string; diamondValue: number; repeatCount: number } => {
   const gifts = [
     { giftName: 'Rose', diamondValue: 5, repeatCount: 1 },
     { giftName: 'TikTok', diamondValue: 10, repeatCount: 1 },
@@ -78,16 +78,16 @@ const generateGift = (): { giftName: string, diamondValue: number, repeatCount: 
     { giftName: 'Crown', diamondValue: 100, repeatCount: 1 },
     { giftName: 'Lion', diamondValue: 400, repeatCount: 1 },
     { giftName: 'Universe', diamondValue: 1000, repeatCount: 1 },
-    { giftName: 'Drama Queen', diamondValue: 5000, repeatCount: 1 }
+    { giftName: 'Drama Queen', diamondValue: 5000, repeatCount: 1 },
   ];
-  
+
   const gift = gifts[Math.floor(Math.random() * gifts.length)];
-  
+
   // For higher valued gifts, sometimes add a repeat count for gift combos
   if (gift.diamondValue >= 100 && Math.random() > 0.7) {
     gift.repeatCount = Math.floor(Math.random() * 5) + 2;
   }
-  
+
   return gift;
 };
 
@@ -96,7 +96,7 @@ export const createMockComment = (): TikTokComment => {
   const userId = uuidv4();
   const uniqueId = generateUsername();
   const nickname = generateDisplayName();
-  
+
   return {
     userId,
     uniqueId,
@@ -106,7 +106,7 @@ export const createMockComment = (): TikTokComment => {
     followRole: Math.random() > 0.8 ? 1 : 0, // 20% chance of follower badge
     isModerator: Math.random() > 0.95, // 5% chance of being moderator
     isSubscriber: Math.random() > 0.9, // 10% chance of being subscriber
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
@@ -116,7 +116,7 @@ export const createMockGift = (): TikTokGift => {
   const uniqueId = generateUsername();
   const nickname = generateDisplayName();
   const gift = generateGift();
-  
+
   return {
     userId,
     uniqueId,
@@ -128,7 +128,7 @@ export const createMockGift = (): TikTokGift => {
     giftPictureUrl: `https://placekitten.com/200/200?gift=${gift.giftName}`,
     repeatCount: gift.repeatCount,
     repeatEnd: true,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
@@ -137,14 +137,14 @@ export const createMockLike = (): TikTokLike => {
   const userId = uuidv4();
   const uniqueId = generateUsername();
   const nickname = generateDisplayName();
-  
+
   return {
     userId,
     uniqueId,
     nickname,
     profilePictureUrl: generateAvatarUrl(),
     likeCount: Math.floor(Math.random() * 10) + 1, // 1-10 likes
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
@@ -153,13 +153,13 @@ export const createMockShare = (): TikTokShare => {
   const userId = uuidv4();
   const uniqueId = generateUsername();
   const nickname = generateDisplayName();
-  
+
   return {
     userId,
     uniqueId,
     nickname,
     profilePictureUrl: generateAvatarUrl(),
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
@@ -168,14 +168,14 @@ export const createMockFollow = (): TikTokFollow => {
   const userId = uuidv4();
   const uniqueId = generateUsername();
   const nickname = generateDisplayName();
-  
+
   return {
     userId,
     uniqueId,
     nickname,
     profilePictureUrl: generateAvatarUrl(),
     followRole: 0,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
@@ -184,43 +184,51 @@ export const createMockMember = (): TikTokMember => {
   const userId = uuidv4();
   const uniqueId = generateUsername();
   const nickname = generateDisplayName();
-  
+
   return {
     userId,
     uniqueId,
     nickname,
     profilePictureUrl: generateAvatarUrl(),
     joinType: Math.random() > 0.5 ? 1 : 2, // 1 = join, 2 = rejoin
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
 // Create a mock viewer count update
 export const createMockViewerCount = (previousCount?: number): TikTokViewerCount => {
   let viewerCount = previousCount || Math.floor(Math.random() * 500) + 50;
-  
+
   // Apply a random change to the viewer count
   const change = Math.floor(Math.random() * 20) - 10; // -10 to +10
   viewerCount = Math.max(50, viewerCount + change); // Keep minimum at 50
-  
+
   return {
     viewerCount,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
 // Generate a series of mock events for testing
 export const generateMockStreamData = (duration: number = 60000, frequency: number = 2000) => {
-  const events: Array<TikTokComment | TikTokGift | TikTokLike | TikTokShare | TikTokFollow | TikTokMember | TikTokViewerCount> = [];
+  const events: Array<
+    | TikTokComment
+    | TikTokGift
+    | TikTokLike
+    | TikTokShare
+    | TikTokFollow
+    | TikTokMember
+    | TikTokViewerCount
+  > = [];
   let viewerCount = 100;
-  
+
   const startTime = Date.now();
   let currentTime = startTime;
-  
+
   while (currentTime < startTime + duration) {
     // Determine which event to generate based on probabilities
     const rand = Math.random();
-    
+
     if (rand < 0.4) {
       // 40% chance of comment
       events.push(createMockComment());
@@ -245,10 +253,10 @@ export const generateMockStreamData = (duration: number = 60000, frequency: numb
       viewerCount = viewCountEvent.viewerCount;
       events.push(viewCountEvent);
     }
-    
+
     currentTime += Math.floor(Math.random() * frequency); // Randomize intervals
   }
-  
+
   // Sort events by timestamp
   return events.sort((a, b) => a.timestamp - b.timestamp);
 };
@@ -260,13 +268,13 @@ export const getRandomUserProfile = () => {
     uniqueId: generateUsername(),
     nickname: generateDisplayName(),
     profilePictureUrl: generateAvatarUrl(),
-    bio: "TikTok creator making awesome content!",
+    bio: 'TikTok creator making awesome content!',
     followingCount: Math.floor(Math.random() * 1000),
     followerCount: Math.floor(Math.random() * 100000),
     heartCount: Math.floor(Math.random() * 1000000),
     videoCount: Math.floor(Math.random() * 100),
     diggCount: Math.floor(Math.random() * 1000),
-    verified: Math.random() > 0.95 // 5% chance of being verified
+    verified: Math.random() > 0.95, // 5% chance of being verified
   };
 };
 
@@ -287,27 +295,107 @@ export const getTrendingHashtags = () => {
     { name: 'travel', videos: 150000000, trending: true },
     { name: 'fitness', videos: 130000000, trending: false },
     { name: 'makeup', videos: 120000000, trending: false },
-    { name: 'gamer', videos: 100000000, trending: true }
+    { name: 'gamer', videos: 100000000, trending: true },
   ];
-  
+
   return hashtags;
 };
 
 // Get trending sounds
 export const getTrendingSounds = () => {
   const sounds = [
-    { id: 'sound1', name: 'Original Sound - Popular Creator', authorName: 'popular_creator123', usageCount: 500000, durationSec: 15, trending: true, previewUrl: 'https://example.com/sound1.mp3' },
-    { id: 'sound2', name: 'Hit Song Remix', authorName: 'dj_remix', usageCount: 450000, durationSec: 30, trending: true, previewUrl: 'https://example.com/sound2.mp3' },
-    { id: 'sound3', name: 'Funny Voice Effect', authorName: 'comedian45', usageCount: 400000, durationSec: 10, trending: true, previewUrl: 'https://example.com/sound3.mp3' },
-    { id: 'sound4', name: 'Dance Challenge Music', authorName: 'dance_guru', usageCount: 350000, durationSec: 20, trending: true, previewUrl: 'https://example.com/sound4.mp3' },
-    { id: 'sound5', name: 'Trending Song Clip', authorName: 'music_clips', usageCount: 300000, durationSec: 15, trending: true, previewUrl: 'https://example.com/sound5.mp3' },
-    { id: 'sound6', name: 'Cinematic Background', authorName: 'movie_sounds', usageCount: 250000, durationSec: 25, trending: false, previewUrl: 'https://example.com/sound6.mp3' },
-    { id: 'sound7', name: 'Viral Quote', authorName: 'quotable', usageCount: 200000, durationSec: 5, trending: true, previewUrl: 'https://example.com/sound7.mp3' },
-    { id: 'sound8', name: 'ASMR Special', authorName: 'asmr_artist', usageCount: 150000, durationSec: 30, trending: false, previewUrl: 'https://example.com/sound8.mp3' },
-    { id: 'sound9', name: 'Popular Movie Line', authorName: 'movie_fan89', usageCount: 120000, durationSec: 8, trending: false, previewUrl: 'https://example.com/sound9.mp3' },
-    { id: 'sound10', name: 'New Challenge Theme', authorName: 'trend_setter', usageCount: 100000, durationSec: 15, trending: true, previewUrl: 'https://example.com/sound10.mp3' }
+    {
+      id: 'sound1',
+      name: 'Original Sound - Popular Creator',
+      authorName: 'popular_creator123',
+      usageCount: 500000,
+      durationSec: 15,
+      trending: true,
+      previewUrl: 'https://example.com/sound1.mp3',
+    },
+    {
+      id: 'sound2',
+      name: 'Hit Song Remix',
+      authorName: 'dj_remix',
+      usageCount: 450000,
+      durationSec: 30,
+      trending: true,
+      previewUrl: 'https://example.com/sound2.mp3',
+    },
+    {
+      id: 'sound3',
+      name: 'Funny Voice Effect',
+      authorName: 'comedian45',
+      usageCount: 400000,
+      durationSec: 10,
+      trending: true,
+      previewUrl: 'https://example.com/sound3.mp3',
+    },
+    {
+      id: 'sound4',
+      name: 'Dance Challenge Music',
+      authorName: 'dance_guru',
+      usageCount: 350000,
+      durationSec: 20,
+      trending: true,
+      previewUrl: 'https://example.com/sound4.mp3',
+    },
+    {
+      id: 'sound5',
+      name: 'Trending Song Clip',
+      authorName: 'music_clips',
+      usageCount: 300000,
+      durationSec: 15,
+      trending: true,
+      previewUrl: 'https://example.com/sound5.mp3',
+    },
+    {
+      id: 'sound6',
+      name: 'Cinematic Background',
+      authorName: 'movie_sounds',
+      usageCount: 250000,
+      durationSec: 25,
+      trending: false,
+      previewUrl: 'https://example.com/sound6.mp3',
+    },
+    {
+      id: 'sound7',
+      name: 'Viral Quote',
+      authorName: 'quotable',
+      usageCount: 200000,
+      durationSec: 5,
+      trending: true,
+      previewUrl: 'https://example.com/sound7.mp3',
+    },
+    {
+      id: 'sound8',
+      name: 'ASMR Special',
+      authorName: 'asmr_artist',
+      usageCount: 150000,
+      durationSec: 30,
+      trending: false,
+      previewUrl: 'https://example.com/sound8.mp3',
+    },
+    {
+      id: 'sound9',
+      name: 'Popular Movie Line',
+      authorName: 'movie_fan89',
+      usageCount: 120000,
+      durationSec: 8,
+      trending: false,
+      previewUrl: 'https://example.com/sound9.mp3',
+    },
+    {
+      id: 'sound10',
+      name: 'New Challenge Theme',
+      authorName: 'trend_setter',
+      usageCount: 100000,
+      durationSec: 15,
+      trending: true,
+      previewUrl: 'https://example.com/sound10.mp3',
+    },
   ];
-  
+
   return sounds;
 };
 
@@ -324,45 +412,45 @@ export const getMockAnalytics = (days: number = 30) => {
         { group: '18-24', percentage: 35 },
         { group: '25-34', percentage: 30 },
         { group: '35-44', percentage: 12 },
-        { group: '45+', percentage: 8 }
+        { group: '45+', percentage: 8 },
       ],
       gender: [
         { group: 'Female', percentage: 60 },
         { group: 'Male', percentage: 38 },
-        { group: 'Other', percentage: 2 }
+        { group: 'Other', percentage: 2 },
       ],
       topCountries: [
         { country: 'United States', percentage: 40 },
         { country: 'United Kingdom', percentage: 12 },
         { country: 'Canada', percentage: 8 },
         { country: 'Australia', percentage: 6 },
-        { country: 'Germany', percentage: 5 }
-      ]
-    }
+        { country: 'Germany', percentage: 5 },
+      ],
+    },
   };
-  
+
   // Generate follower growth data
   let followers = 5000 + Math.floor(Math.random() * 1000);
   for (let i = 0; i < days; i++) {
     const date = new Date();
     date.setDate(date.getDate() - (days - i));
-    
+
     const growth = Math.floor(Math.random() * 100) - 10; // -10 to 90
     followers += growth;
-    
+
     analytics.followerGrowth.push({
       date: date.toISOString().split('T')[0],
       followers,
       growth: growth > 0 ? growth : 0, // Only show positive growth in the data
-      lost: growth < 0 ? Math.abs(growth) : 0
+      lost: growth < 0 ? Math.abs(growth) : 0,
     });
   }
-  
+
   // Generate views per video data (last 10 videos)
   for (let i = 0; i < 10; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i * 3); // A video every 3 days
-    
+
     analytics.viewsPerVideo.push({
       date: date.toISOString().split('T')[0],
       videoId: `video${i}`,
@@ -370,21 +458,21 @@ export const getMockAnalytics = (days: number = 30) => {
       views: Math.floor(Math.random() * 50000) + 1000,
       likes: Math.floor(Math.random() * 5000) + 100,
       comments: Math.floor(Math.random() * 200) + 10,
-      shares: Math.floor(Math.random() * 100) + 5
+      shares: Math.floor(Math.random() * 100) + 5,
     });
   }
-  
+
   // Generate engagement rate data
   for (let i = 0; i < days; i++) {
     const date = new Date();
     date.setDate(date.getDate() - (days - i));
-    
+
     analytics.engagementRate.push({
       date: date.toISOString().split('T')[0],
       rate: Math.random() * 0.15 + 0.01, // 1% to 16%
     });
   }
-  
+
   // Generate top performing videos
   for (let i = 0; i < 5; i++) {
     analytics.topPerformingVideos.push({
@@ -394,9 +482,9 @@ export const getMockAnalytics = (days: number = 30) => {
       likes: Math.floor(Math.random() * 20000) + 5000,
       comments: Math.floor(Math.random() * 1000) + 100,
       shares: Math.floor(Math.random() * 500) + 50,
-      engagementRate: Math.random() * 0.2 + 0.05 // 5% to 25%
+      engagementRate: Math.random() * 0.2 + 0.05, // 5% to 25%
     });
   }
-  
+
   return analytics;
-}; 
+};

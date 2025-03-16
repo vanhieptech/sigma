@@ -1,25 +1,32 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
 } from 'recharts';
 import { Download, Search, Filter, RefreshCw } from 'lucide-react';
 
@@ -55,36 +62,36 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
   const [postData, setPostData] = useState<PostData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
-  
+
   // Sentiment data for charts
   const [sentimentData, setSentimentData] = useState([
     { name: 'Positive', value: 0, color: '#10b981' },
     { name: 'Neutral', value: 0, color: '#6b7280' },
     { name: 'Negative', value: 0, color: '#ef4444' },
   ]);
-  
+
   // Engagement data for charts
   const [engagementData, setEngagementData] = useState([
     { name: 'Comments', value: 0 },
     { name: 'Likes', value: 0 },
     { name: 'Shares', value: 0 },
   ]);
-  
+
   useEffect(() => {
     if (!jobId) return;
-    
+
     const fetchResults = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const response = await fetch(`/api/crawlers/facebook/results/${jobId}`);
         const data = await response.json();
-        
+
         if (data.success && data.post) {
           setPostData(data.post);
           setFilteredComments(data.post.comments || []);
-          
+
           // Update sentiment data based on analysis results
           if (data.analysis && data.analysis.sentiment) {
             setSentimentData([
@@ -93,7 +100,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
               { name: 'Negative', value: data.analysis.sentiment.negative || 0, color: '#ef4444' },
             ]);
           }
-          
+
           // Update engagement data
           setEngagementData([
             { name: 'Comments', value: data.post.commentCount || 0 },
@@ -109,33 +116,34 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
         setLoading(false);
       }
     };
-    
+
     fetchResults();
   }, [jobId]);
-  
+
   useEffect(() => {
     if (!postData) return;
-    
+
     // Filter comments based on search term
     if (searchTerm.trim() === '') {
       setFilteredComments(postData.comments || []);
     } else {
       const term = searchTerm.toLowerCase();
-      const filtered = postData.comments.filter(comment => 
-        comment.message.toLowerCase().includes(term) || 
-        comment.authorName.toLowerCase().includes(term)
+      const filtered = postData.comments.filter(
+        comment =>
+          comment.message.toLowerCase().includes(term) ||
+          comment.authorName.toLowerCase().includes(term)
       );
       setFilteredComments(filtered);
     }
   }, [searchTerm, postData]);
-  
+
   const handleExportCSV = () => {
     if (!postData) return;
-    
+
     // Create CSV content
     let csvContent = 'data:text/csv;charset=utf-8,';
     csvContent += 'Comment ID,Author Name,Author ID,Message,Timestamp,Likes\n';
-    
+
     // Add each comment as a row
     postData.comments.forEach(comment => {
       const row = [
@@ -144,11 +152,11 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
         comment.authorId,
         `"${comment.message.replace(/"/g, '""')}"`,
         comment.timestamp,
-        comment.likes
+        comment.likes,
       ].join(',');
       csvContent += row + '\n';
     });
-    
+
     // Create download link
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -158,7 +166,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
     link.click();
     document.body.removeChild(link);
   };
-  
+
   if (loading) {
     return (
       <Card className="w-full">
@@ -171,7 +179,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
       </Card>
     );
   }
-  
+
   if (error) {
     return (
       <Card className="w-full">
@@ -187,7 +195,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
       </Card>
     );
   }
-  
+
   if (!postData) {
     return (
       <Card className="w-full">
@@ -200,7 +208,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
       </Card>
     );
   }
-  
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -231,14 +239,14 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
               </div>
             </div>
           </div>
-          
+
           <Tabs defaultValue="comments">
             <TabsList className="grid grid-cols-3 mb-4">
               <TabsTrigger value="comments">Comments</TabsTrigger>
               <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
               <TabsTrigger value="engagement">Engagement Metrics</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="comments" className="space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="relative flex-1">
@@ -246,7 +254,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
                   <Input
                     placeholder="Search comments..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="pl-8"
                   />
                 </div>
@@ -257,7 +265,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
                   <Filter className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               <div className="border rounded-md">
                 <Table>
                   <TableHeader>
@@ -276,7 +284,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredComments.map((comment) => (
+                      filteredComments.map(comment => (
                         <TableRow key={comment.id}>
                           <TableCell className="font-medium">{comment.authorName}</TableCell>
                           <TableCell>{comment.message}</TableCell>
@@ -289,7 +297,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
                 </Table>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="sentiment">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
@@ -318,28 +326,29 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">Sentiment Summary</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {sentimentData.map((item) => (
+                      {sentimentData.map(item => (
                         <div key={item.name} className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">{item.name}</span>
                             <span className="text-sm text-muted-foreground">
-                              {item.value} comments ({((item.value / postData.commentCount) * 100).toFixed(1)}%)
+                              {item.value} comments (
+                              {((item.value / postData.commentCount) * 100).toFixed(1)}%)
                             </span>
                           </div>
                           <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                            <div 
-                              className="h-full rounded-full" 
-                              style={{ 
+                            <div
+                              className="h-full rounded-full"
+                              style={{
                                 width: `${(item.value / postData.commentCount) * 100}%`,
-                                backgroundColor: item.color 
-                              }} 
+                                backgroundColor: item.color,
+                              }}
                             />
                           </div>
                         </div>
@@ -349,7 +358,7 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
                 </Card>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="engagement">
               <div className="grid grid-cols-1 gap-6">
                 <Card>
@@ -375,4 +384,4 @@ export function FacebookResults({ jobId }: FacebookResultsProps) {
       </CardContent>
     </Card>
   );
-} 
+}

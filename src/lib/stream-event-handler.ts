@@ -5,7 +5,7 @@ import {
   TikTokLike,
   TikTokShare,
   TikTokFollow,
-  TikTokMember
+  TikTokMember,
 } from './tiktok-live';
 import { Socket } from 'socket.io';
 
@@ -56,17 +56,13 @@ export class StreamEventHandler {
   private productCatalog: Map<string, ProductData> = new Map();
   private recentResponses: Set<string> = new Set(); // To prevent duplicate responses
   private isProcessingQueue: boolean = false;
-  private responseQueue: Array<{event: string, data: any}> = [];
-  
-  constructor(
-    storeId: string, 
-    aiManager: AIVoiceManager, 
-    config: StreamEventHandlerConfig
-  ) {
+  private responseQueue: Array<{ event: string; data: any }> = [];
+
+  constructor(storeId: string, aiManager: AIVoiceManager, config: StreamEventHandlerConfig) {
     this.storeId = storeId;
     this.aiManager = aiManager;
     this.config = config;
-    
+
     // Start the response queue processor
     this.processResponseQueue();
   }
@@ -93,10 +89,10 @@ export class StreamEventHandler {
 
   private shouldRespond(event: string, data: any): boolean {
     if (!this.config.enableAIResponses) return false;
-    
+
     const responseKey = this.getResponseKey(event, data.userId);
     if (this.recentResponses.has(responseKey)) return false;
-    
+
     switch (event) {
       case 'comment':
         return this.config.respondToComments && this.isQuestionOrProductInquiry(data.comment);
@@ -110,57 +106,80 @@ export class StreamEventHandler {
         return this.config.respondToShares;
       case 'member':
         // Only respond to a percentage of joins to avoid spam
-        return this.config.respondToJoins && (Math.random() * 100 <= this.config.joinResponseRate);
+        return this.config.respondToJoins && Math.random() * 100 <= this.config.joinResponseRate;
       case 'purchase':
         return this.config.respondToPurchases;
       default:
         return false;
     }
   }
-  
+
   private isQuestionOrProductInquiry(comment: string): boolean {
     // Check if the comment is a question or a product inquiry
     const lowerComment = comment.toLowerCase();
-    
+
     // Check if it's a question
     if (lowerComment.endsWith('?')) return true;
-    
+
     // Check for question words
-    const questionWords = ['what', 'how', 'when', 'where', 'why', 'who', 'which', 'can', 'does', 'is', 'are', 'will', 'do'];
+    const questionWords = [
+      'what',
+      'how',
+      'when',
+      'where',
+      'why',
+      'who',
+      'which',
+      'can',
+      'does',
+      'is',
+      'are',
+      'will',
+      'do',
+    ];
     if (questionWords.some(word => lowerComment.startsWith(word))) return true;
-    
+
     // Check for product inquiry phrases
     const productPhrases = [
-      'price', 'cost', 'how much', 'available', 'in stock', 'shipping', 'discount', 
-      'where can i buy', 'tell me about', 'details', 'more info'
+      'price',
+      'cost',
+      'how much',
+      'available',
+      'in stock',
+      'shipping',
+      'discount',
+      'where can i buy',
+      'tell me about',
+      'details',
+      'more info',
     ];
     if (productPhrases.some(phrase => lowerComment.includes(phrase))) return true;
-    
+
     return false;
   }
-  
+
   private async processResponseQueue() {
     if (this.isProcessingQueue || this.responseQueue.length === 0) {
       setTimeout(() => this.processResponseQueue(), 1000);
       return;
     }
-    
+
     this.isProcessingQueue = true;
-    
+
     try {
       const { event, data } = this.responseQueue.shift()!;
       const responseKey = this.getResponseKey(event, data.userId);
-      
+
       // Mark as processed
       this.recentResponses.add(responseKey);
       setTimeout(() => this.recentResponses.delete(responseKey), 30000); // Clean up after 30 seconds
-      
+
       // Generate text response
       const text = await this.aiManager.generateTextResponse(this.storeId, event, data);
-      
+
       // Convert to speech
       const response = await this.aiManager.textToSpeech(this.storeId, text);
-      
+
       // Send response to client
       if (this.socket) {
         this.socket.emit('aiResponse', {
@@ -170,12 +189,12 @@ export class StreamEventHandler {
           userData: {
             userId: data.userId,
             uniqueId: data.uniqueId,
-            nickname: data.nickname
+            nickname: data.nickname,
           },
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
-      
+
       // Add a delay between responses to prevent overwhelming the stream
       await new Promise(resolve => setTimeout(resolve, (response.duration || 2) * 1000 + 500));
     } catch (error) {
@@ -185,7 +204,7 @@ export class StreamEventHandler {
       setTimeout(() => this.processResponseQueue(), 500);
     }
   }
-  
+
   public async handleComment(comment: TikTokComment) {
     if (this.shouldRespond('comment', comment)) {
       const questionEvent: QuestionEvent = {
@@ -194,71 +213,89 @@ export class StreamEventHandler {
         nickname: comment.nickname,
         profilePictureUrl: comment.profilePictureUrl,
         question: comment.comment,
-        timestamp: comment.timestamp
+        timestamp: comment.timestamp,
       };
-      
+
       this.responseQueue.push({ event: 'question', data: questionEvent });
     }
   }
-  
+
   public async handleGift(gift: TikTokGift) {
     if (this.shouldRespond('gift', gift)) {
-      this.responseQueue.push({ event: 'gift', data: {
-        username: gift.nickname,
-        uniqueId: gift.uniqueId,
-        giftName: gift.giftName,
-        giftCount: gift.repeatCount,
-        diamondCount: gift.diamondCount
-      }});
+      this.responseQueue.push({
+        event: 'gift',
+        data: {
+          username: gift.nickname,
+          uniqueId: gift.uniqueId,
+          giftName: gift.giftName,
+          giftCount: gift.repeatCount,
+          diamondCount: gift.diamondCount,
+        },
+      });
     }
   }
-  
+
   public async handleLike(like: TikTokLike) {
     if (this.shouldRespond('like', like)) {
-      this.responseQueue.push({ event: 'like', data: {
-        username: like.nickname,
-        uniqueId: like.uniqueId,
-        likeCount: like.likeCount
-      }});
+      this.responseQueue.push({
+        event: 'like',
+        data: {
+          username: like.nickname,
+          uniqueId: like.uniqueId,
+          likeCount: like.likeCount,
+        },
+      });
     }
   }
-  
+
   public async handleFollow(follow: TikTokFollow) {
     if (this.shouldRespond('follow', follow)) {
-      this.responseQueue.push({ event: 'follow', data: {
-        username: follow.nickname,
-        uniqueId: follow.uniqueId
-      }});
+      this.responseQueue.push({
+        event: 'follow',
+        data: {
+          username: follow.nickname,
+          uniqueId: follow.uniqueId,
+        },
+      });
     }
   }
-  
+
   public async handleShare(share: TikTokShare) {
     if (this.shouldRespond('share', share)) {
-      this.responseQueue.push({ event: 'share', data: {
-        username: share.nickname,
-        uniqueId: share.uniqueId
-      }});
+      this.responseQueue.push({
+        event: 'share',
+        data: {
+          username: share.nickname,
+          uniqueId: share.uniqueId,
+        },
+      });
     }
   }
-  
+
   public async handleMember(member: TikTokMember) {
     if (this.shouldRespond('member', member)) {
-      this.responseQueue.push({ event: 'join', data: {
-        username: member.nickname,
-        uniqueId: member.uniqueId,
-        joinType: member.joinType
-      }});
+      this.responseQueue.push({
+        event: 'join',
+        data: {
+          username: member.nickname,
+          uniqueId: member.uniqueId,
+          joinType: member.joinType,
+        },
+      });
     }
   }
-  
+
   public async handlePurchase(purchase: PurchaseEvent) {
     if (this.shouldRespond('purchase', purchase)) {
-      this.responseQueue.push({ event: 'purchase', data: {
-        username: purchase.nickname,
-        uniqueId: purchase.uniqueId,
-        product: purchase.product.name,
-        price: purchase.product.price
-      }});
+      this.responseQueue.push({
+        event: 'purchase',
+        data: {
+          username: purchase.nickname,
+          uniqueId: purchase.uniqueId,
+          product: purchase.product.name,
+          price: purchase.product.price,
+        },
+      });
     }
   }
-} 
+}

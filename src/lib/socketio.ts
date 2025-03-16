@@ -32,16 +32,17 @@ export function initSocketIO(server: NetServer) {
       addTrailingSlash: false,
       cors: {
         origin: '*',
-        methods: ['GET', 'POST']
-      }
+        methods: ['GET', 'POST'],
+      },
     });
-    
+
     // Initialize connections map if it doesn't exist
-    (global as any).connections = (global as any).connections || new Map<string, WebcastPushConnection>();
-    
+    (global as any).connections =
+      (global as any).connections || new Map<string, WebcastPushConnection>();
+
     console.log('Socket.IO initialized');
   }
-  
+
   return (global as any).io;
 }
 
@@ -53,4 +54,4 @@ export function getIO() {
 // Get the TikTok connections map
 export function getConnections() {
   return (global as any).connections;
-} 
+}

@@ -11,8 +11,8 @@ const config: Config = {
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'tiktok-gradient': 'linear-gradient(90deg, #25F4EE 0%, #FE2C55 100%)',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -20,6 +20,20 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        tiktok: {
+          pink: {
+            light: '#FF5E78',
+            DEFAULT: '#FE2C55',
+            dark: '#CC1D3B',
+          },
+          cyan: {
+            light: '#69F8F3',
+            DEFAULT: '#25F4EE',
+            dark: '#0DC7C1',
+          },
+          black: '#010101',
+          white: '#FFFFFF',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -78,10 +92,28 @@ const config: Config = {
             height: '0',
           },
         },
+        'gradient-x': {
+          '0%, 100%': {
+            backgroundPosition: '0% 50%',
+          },
+          '50%': {
+            backgroundPosition: '100% 50%',
+          },
+        },
+        'pulse-gentle': {
+          '0%, 100%': {
+            opacity: '1',
+          },
+          '50%': {
+            opacity: '0.85',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'gradient-x': 'gradient-x 5s ease infinite',
+        'pulse-gentle': 'pulse-gentle 3s ease-in-out infinite',
       },
     },
   },

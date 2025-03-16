@@ -1,18 +1,31 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { InfoIcon, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useUser } from '@/lib/auth';
 import { getCredentialsByUser, PlatformCredential } from '@/lib/credentials-store';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { FacebookLoginButton } from '@/components/auth/FacebookLoginButton';
 
 interface FacebookUrlFormProps {
@@ -29,7 +42,7 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
     includeReactions: true,
     maxComments: 10000,
   });
-  
+
   // Add progress tracking state
   const [progress, setProgress] = useState({
     total: 0,
@@ -38,17 +51,17 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
     status: 'pending' as 'pending' | 'processing' | 'completed' | 'failed',
     jobId: '',
   });
-  
+
   const [savedCredentials, setSavedCredentials] = useState<PlatformCredential[]>([]);
   const [selectedCredentialId, setSelectedCredentialId] = useState<string>('');
   const { user } = useUser();
-  
+
   // Add a state for tracking if the user is authenticated with Facebook
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   useEffect(() => {
     if (!user) return;
-    
+
     const loadCredentials = async () => {
       try {
         const credentials = await getCredentialsByUser(user.id);
@@ -58,10 +71,10 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
         console.error('Error loading credentials:', err);
       }
     };
-    
+
     loadCredentials();
   }, [user]);
-  
+
   useEffect(() => {
     if (selectedCredentialId) {
       const credential = savedCredentials.find(c => c.id === selectedCredentialId);
@@ -70,17 +83,17 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
       }
     }
   }, [selectedCredentialId, savedCredentials]);
-  
+
   const handleAccessTokenReceived = (token: string) => {
     setAccessToken(token);
     setIsAuthenticated(true);
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    
+
     try {
       // Start the crawl job
       const response = await fetch('/api/crawlers/facebook/crawl', {
@@ -94,14 +107,14 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
           },
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success && data.jobId) {
         // Set the job ID in progress state
         setProgress(prev => ({ ...prev, jobId: data.jobId, status: 'processing' }));
         onStartCrawl(data.jobId);
-        
+
         // Start polling for progress
         pollForProgress(data.jobId);
       } else {
@@ -113,14 +126,14 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
       setLoading(false);
     }
   };
-  
+
   const pollForProgress = (jobId: string) => {
     // Set up an interval to poll for progress
     const progressInterval = setInterval(async () => {
       try {
         const progressResponse = await fetch(`/api/crawlers/facebook/progress/${jobId}`);
         const progressData = await progressResponse.json();
-        
+
         if (progressData.success) {
           setProgress({
             total: progressData.total,
@@ -129,12 +142,12 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
             status: progressData.status,
             jobId,
           });
-          
+
           // If the job is completed or failed, stop polling
           if (progressData.status === 'completed' || progressData.status === 'failed') {
             clearInterval(progressInterval);
             setLoading(false);
-            
+
             // If the job failed, show the error
             if (progressData.status === 'failed' && progressData.error) {
               setError(progressData.error);
@@ -153,11 +166,11 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
         setError('An error occurred while getting job progress');
       }
     }, 2000); // Poll every 2 seconds
-    
+
     // Clean up the interval when the component unmounts
     return () => clearInterval(progressInterval);
   };
-  
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -170,7 +183,7 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-            <Label htmlFor="url" className="text-sm font-medium">
+              <Label htmlFor="url" className="text-sm font-medium">
                 Facebook Post URL
               </Label>
               <TooltipProvider>
@@ -179,7 +192,9 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
                     <InfoIcon className="h-4 w-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">Enter the full URL of a Facebook post you want to analyze</p>
+                    <p className="max-w-xs">
+                      Enter the full URL of a Facebook post you want to analyze
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -188,29 +203,28 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
               id="url"
               placeholder="https://www.facebook.com/username/posts/123456789"
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={e => setUrl(e.target.value)}
               className="w-full"
               required
             />
           </div>
-          
+
           <div className="space-y-2">
-            <Label className="text-sm font-medium">
-              Facebook Authentication
-            </Label>
-            
+            <Label className="text-sm font-medium">Facebook Authentication</Label>
+
             {!isAuthenticated ? (
               <div className="space-y-4">
                 <div className="bg-muted p-4 rounded-md">
                   <p className="text-sm mb-4">
-                    Connect with Facebook to get an access token automatically. This will allow the crawler to access the post data.
+                    Connect with Facebook to get an access token automatically. This will allow the
+                    crawler to access the post data.
                   </p>
-                  <FacebookLoginButton 
+                  <FacebookLoginButton
                     onAccessTokenReceived={handleAccessTokenReceived}
                     buttonText="Connect with Facebook"
                   />
                 </div>
-                
+
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -226,10 +240,12 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-md flex items-center justify-between">
                 <div className="flex items-center">
                   <CheckCircle2 className="h-5 w-5 text-green-500 dark:text-green-400 mr-2" />
-                  <span className="text-sm text-green-700 dark:text-green-300">Connected to Facebook</span>
+                  <span className="text-sm text-green-700 dark:text-green-300">
+                    Connected to Facebook
+                  </span>
                 </div>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     setIsAuthenticated(false);
@@ -240,7 +256,7 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
                 </Button>
               </div>
             )}
-            
+
             {!isAuthenticated && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -253,7 +269,10 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
                         <InfoIcon className="h-4 w-4 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">Enter your Facebook Graph API access token with permissions to read posts and comments</p>
+                        <p className="max-w-xs">
+                          Enter your Facebook Graph API access token with permissions to read posts
+                          and comments
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -263,7 +282,7 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
                   type="password"
                   placeholder="Enter your Facebook access token"
                   value={accessToken}
-                  onChange={(e) => setAccessToken(e.target.value)}
+                  onChange={e => setAccessToken(e.target.value)}
                   className="w-full"
                 />
                 <div className="text-xs text-muted-foreground mt-1">
@@ -274,7 +293,7 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
               </div>
             )}
           </div>
-          
+
           <div className="space-y-4">
             <h3 className="text-sm font-medium">Crawl Options</h3>
             <div className="space-y-2">
@@ -282,33 +301,39 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
                 <Checkbox
                   id="includeReplies"
                   checked={options.includeReplies}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={checked =>
                     setOptions({ ...options, includeReplies: checked === true })
                   }
                 />
-                <Label htmlFor="includeReplies" className="text-sm">Include comment replies</Label>
+                <Label htmlFor="includeReplies" className="text-sm">
+                  Include comment replies
+                </Label>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="includeReactions"
                   checked={options.includeReactions}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={checked =>
                     setOptions({ ...options, includeReactions: checked === true })
                   }
                 />
-                <Label htmlFor="includeReactions" className="text-sm">Include reactions data</Label>
+                <Label htmlFor="includeReactions" className="text-sm">
+                  Include reactions data
+                </Label>
               </div>
-              
+
               <div className="space-y-2">
-                <Label htmlFor="maxComments" className="text-sm">Maximum comments to crawl</Label>
+                <Label htmlFor="maxComments" className="text-sm">
+                  Maximum comments to crawl
+                </Label>
                 <Input
                   id="maxComments"
                   type="number"
                   min="1"
                   max="100000"
                   value={options.maxComments}
-                  onChange={(e) => 
+                  onChange={e =>
                     setOptions({ ...options, maxComments: parseInt(e.target.value) || 10000 })
                   }
                   className="w-full"
@@ -316,7 +341,7 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
               </div>
             </div>
           </div>
-          
+
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -324,19 +349,24 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          
+
           {progress.status === 'processing' && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Crawling in progress...</span>
-                <span>{progress.current} / {progress.total}</span>
+                <span>
+                  {progress.current} / {progress.total}
+                </span>
               </div>
               <Progress value={progress.percentage} className="h-2" />
             </div>
           )}
-          
+
           {progress.status === 'completed' && (
-            <Alert variant="success" className="bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-900/30 dark:text-green-400">
+            <Alert
+              variant="success"
+              className="bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-900/30 dark:text-green-400"
+            >
               <CheckCircle2 className="h-4 w-4" />
               <AlertTitle>Success</AlertTitle>
               <AlertDescription>Crawl completed successfully!</AlertDescription>
@@ -345,9 +375,9 @@ export function FacebookUrlForm({ onStartCrawl }: FacebookUrlFormProps) {
         </form>
       </CardContent>
       <CardFooter>
-        <Button 
-          type="submit" 
-          className="w-full" 
+        <Button
+          type="submit"
+          className="w-full"
           disabled={loading || !url || !accessToken}
           onClick={handleSubmit}
         >

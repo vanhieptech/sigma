@@ -1,4 +1,11 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Facebook, MessageSquare, Twitter, Linkedin } from 'lucide-react';
@@ -11,7 +18,7 @@ export default function CrawlersDashboard() {
       icon: <Facebook className="h-8 w-8 text-blue-600" />,
       link: '/dashboard/crawlers/facebook',
       badge: 'Ready',
-      badgeColor: 'bg-green-100 text-green-800'
+      badgeColor: 'bg-green-100 text-green-800',
     },
     {
       name: 'TikTok',
@@ -19,7 +26,7 @@ export default function CrawlersDashboard() {
       icon: <MessageSquare className="h-8 w-8 text-black" />,
       link: '/dashboard/crawlers/tiktok',
       badge: 'Coming Soon',
-      badgeColor: 'bg-yellow-100 text-yellow-800'
+      badgeColor: 'bg-yellow-100 text-yellow-800',
     },
     {
       name: 'Twitter',
@@ -27,7 +34,7 @@ export default function CrawlersDashboard() {
       icon: <Twitter className="h-8 w-8 text-blue-400" />,
       link: '/dashboard/crawlers/twitter',
       badge: 'Coming Soon',
-      badgeColor: 'bg-yellow-100 text-yellow-800'
+      badgeColor: 'bg-yellow-100 text-yellow-800',
     },
     {
       name: 'LinkedIn',
@@ -35,8 +42,8 @@ export default function CrawlersDashboard() {
       icon: <Linkedin className="h-8 w-8 text-blue-800" />,
       link: '/dashboard/crawlers/linkedin',
       badge: 'Coming Soon',
-      badgeColor: 'bg-yellow-100 text-yellow-800'
-    }
+      badgeColor: 'bg-yellow-100 text-yellow-800',
+    },
   ];
 
   return (
@@ -49,12 +56,14 @@ export default function CrawlersDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {platforms.map((platform) => (
+        {platforms.map(platform => (
           <Card key={platform.name} className="overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex justify-between items-start">
                 {platform.icon}
-                <div className={`px-2 py-1 rounded-full text-xs font-medium ${platform.badgeColor}`}>
+                <div
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${platform.badgeColor}`}
+                >
                   {platform.badge}
                 </div>
               </div>
@@ -71,8 +80,8 @@ export default function CrawlersDashboard() {
             </CardContent>
             <CardFooter>
               <Link href={platform.link} className="w-full">
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   variant={platform.badge === 'Ready' ? 'default' : 'outline'}
                   disabled={platform.badge !== 'Ready'}
                 >
@@ -85,4 +94,4 @@ export default function CrawlersDashboard() {
       </div>
     </div>
   );
-} 
+}

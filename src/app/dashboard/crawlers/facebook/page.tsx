@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FacebookUrlForm } from "@/components/crawlers/facebook/FacebookUrlForm";
-import { FacebookPageCommentsForm } from "@/components/crawlers/facebook/FacebookPageCommentsForm";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { InfoIcon } from "lucide-react";
+import { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FacebookUrlForm } from '@/components/crawlers/facebook/FacebookUrlForm';
+import { FacebookPageCommentsForm } from '@/components/crawlers/facebook/FacebookPageCommentsForm';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
+import { InfoIcon } from 'lucide-react';
 
 export default function FacebookCrawlerPage() {
   const [jobId, setJobId] = useState<string | null>(null);
@@ -35,7 +35,7 @@ export default function FacebookCrawlerPage() {
           <TabsTrigger value="crawler">Full Crawler</TabsTrigger>
           <TabsTrigger value="page-comments">Page Comments</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="crawler">
           <Card>
             <CardHeader>
@@ -49,11 +49,11 @@ export default function FacebookCrawlerPage() {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="page-comments">
           <FacebookPageCommentsForm />
         </TabsContent>
       </Tabs>
     </div>
   );
-} 
+}

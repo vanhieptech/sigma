@@ -1,7 +1,7 @@
 // Mock implementation of TikTok Live Client
 // This avoids direct import of the problematic library in the browser context
 
-import { WebcastPushConnection as TikTokLiveConnection } from 'tiktok-live-connector'
+import { WebcastPushConnection as TikTokLiveConnection } from 'tiktok-live-connector';
 
 // Client-side interfaces for TikTok Live data
 export interface TikTokComment {
@@ -80,7 +80,7 @@ export class TikTokLiveClient {
   private connectionState: TikTokConnectionState = {
     isConnected: false,
     isConnecting: false,
-    error: null
+    error: null,
   };
 
   private constructor() {}
@@ -109,13 +109,13 @@ export class TikTokLiveClient {
 
       // Connect and wait for response
       const state = await this.connection.connect();
-      
+
       // Update connection state
       this.connectionState = {
         isConnected: true,
         isConnecting: false,
         roomId: state.roomId,
-        error: null
+        error: null,
       };
 
       // Set up event handlers
@@ -126,7 +126,7 @@ export class TikTokLiveClient {
       this.connectionState = {
         isConnected: false,
         isConnecting: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
       };
       throw error;
     }
@@ -139,7 +139,7 @@ export class TikTokLiveClient {
       this.connectionState = {
         isConnected: false,
         isConnecting: false,
-        error: null
+        error: null,
       };
     }
   }
@@ -154,7 +154,8 @@ export class TikTokLiveClient {
 
     // Handle connection error
     this.connection.on('error', (error: unknown) => {
-      this.connectionState.error = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.connectionState.error =
+        error instanceof Error ? error.message : 'Unknown error occurred';
     });
   }
 

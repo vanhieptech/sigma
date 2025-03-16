@@ -16,13 +16,11 @@ export default function FacebookSetupPage() {
       <p className="text-muted-foreground mb-8">
         Follow these steps to create a Facebook App and get your App ID for authentication
       </p>
-      
+
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Prerequisites</CardTitle>
-          <CardDescription>
-            What you'll need before getting started
-          </CardDescription>
+          <CardDescription>What you'll need before getting started</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <ul className="list-disc pl-6 space-y-2">
@@ -32,101 +30,91 @@ export default function FacebookSetupPage() {
           </ul>
         </CardContent>
       </Card>
-      
+
       <div className="space-y-8">
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Step 1: Create a Facebook Developer Account</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            Step 1: Create a Facebook Developer Account
+          </h2>
           <ol className="list-decimal pl-6 space-y-4">
             <li>
-              Go to <a href="https://developers.facebook.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Facebook for Developers</a>
+              Go to{' '}
+              <a
+                href="https://developers.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Facebook for Developers
+              </a>
             </li>
-            <li>
-              Click on "Get Started" or "Log In" in the top-right corner
-            </li>
-            <li>
-              Log in with your Facebook account
-            </li>
+            <li>Click on "Get Started" or "Log In" in the top-right corner</li>
+            <li>Log in with your Facebook account</li>
             <li>
               Complete the registration process if you haven't already registered as a developer
             </li>
           </ol>
         </section>
-        
+
         <section>
           <h2 className="text-2xl font-semibold mb-4">Step 2: Create a New App</h2>
           <ol className="list-decimal pl-6 space-y-4">
             <li>
               From the Facebook for Developers dashboard, click on "My Apps" in the top-right corner
             </li>
-            <li>
-              Click on "Create App"
-            </li>
-            <li>
-              Select "Consumer" as the app type
-            </li>
+            <li>Click on "Create App"</li>
+            <li>Select "Consumer" as the app type</li>
             <li>
               Fill in the app details:
               <ul className="list-disc pl-6 mt-2">
                 <li>App Name: Choose a name for your app (e.g., "My Facebook Crawler")</li>
                 <li>App Contact Email: Enter your email address</li>
-                <li>Business Account: Select a business account if you have one, or create a new one</li>
+                <li>
+                  Business Account: Select a business account if you have one, or create a new one
+                </li>
               </ul>
             </li>
-            <li>
-              Click "Create App" to proceed
-            </li>
+            <li>Click "Create App" to proceed</li>
           </ol>
         </section>
-        
+
         <section>
           <h2 className="text-2xl font-semibold mb-4">Step 3: Add Facebook Login Product</h2>
           <ol className="list-decimal pl-6 space-y-4">
+            <li>In your app dashboard, find the "Add Products to Your App" section</li>
+            <li>Find "Facebook Login" and click "Set Up"</li>
+            <li>Select "Web" as the platform</li>
             <li>
-              In your app dashboard, find the "Add Products to Your App" section
+              Enter your website URL (e.g., "https://yourdomain.com" or "http://localhost:3000" for
+              local development)
             </li>
-            <li>
-              Find "Facebook Login" and click "Set Up"
-            </li>
-            <li>
-              Select "Web" as the platform
-            </li>
-            <li>
-              Enter your website URL (e.g., "https://yourdomain.com" or "http://localhost:3000" for local development)
-            </li>
-            <li>
-              Click "Save" and then "Continue"
-            </li>
-            <li>
-              You can skip the next steps in the quick start guide for now
-            </li>
+            <li>Click "Save" and then "Continue"</li>
+            <li>You can skip the next steps in the quick start guide for now</li>
           </ol>
         </section>
-        
+
         <section>
           <h2 className="text-2xl font-semibold mb-4">Step 4: Configure Facebook Login Settings</h2>
           <ol className="list-decimal pl-6 space-y-4">
-            <li>
-              In the left sidebar, click on "Facebook Login" and then "Settings"
-            </li>
+            <li>In the left sidebar, click on "Facebook Login" and then "Settings"</li>
             <li>
               Add the following URLs to the "Valid OAuth Redirect URIs" field:
               <ul className="list-disc pl-6 mt-2">
-                <li>https://yourdomain.com/dashboard/crawlers/facebook (replace with your actual domain)</li>
+                <li>
+                  https://yourdomain.com/dashboard/crawlers/facebook (replace with your actual
+                  domain)
+                </li>
                 <li>http://localhost:3000/dashboard/crawlers/facebook (for local development)</li>
               </ul>
             </li>
-            <li>
-              Click "Save Changes"
-            </li>
+            <li>Click "Save Changes"</li>
           </ol>
         </section>
-        
+
         <section>
           <h2 className="text-2xl font-semibold mb-4">Step 5: Get Your App ID</h2>
           <ol className="list-decimal pl-6 space-y-4">
-            <li>
-              In the left sidebar, click on "Settings" and then "Basic"
-            </li>
+            <li>In the left sidebar, click on "Settings" and then "Basic"</li>
             <li>
               Here you'll find your "App ID" - this is what you need for the Facebook Login button
             </li>
@@ -138,26 +126,35 @@ export default function FacebookSetupPage() {
             </li>
           </ol>
         </section>
-        
+
         <section className="mb-6">
           <h2 className="text-2xl font-semibold mb-4">Step 6: Configure App Permissions</h2>
           <ol className="list-decimal pl-6 space-y-4">
             <li>
-              In the left sidebar, click on &quot;App Review&quot; and then &quot;Permissions and Features&quot;
+              In the left sidebar, click on &quot;App Review&quot; and then &quot;Permissions and
+              Features&quot;
             </li>
             <li>
               Look for the following permissions (search for them in the search bar if needed):
               <ul className="list-disc pl-6 mt-2">
-                <li><strong>pages_read_engagement</strong> - To access engagement metrics for Pages</li>
-                <li><strong>pages_show_list</strong> - To see the list of Pages a person manages</li>
-                <li><strong>pages_manage_posts</strong> - To access post content on Pages</li>
-                <li><strong>public_profile</strong> - Basic permission for user profiles</li>
-                <li><strong>email</strong> - To access the user&apos;s email address</li>
+                <li>
+                  <strong>pages_read_engagement</strong> - To access engagement metrics for Pages
+                </li>
+                <li>
+                  <strong>pages_show_list</strong> - To see the list of Pages a person manages
+                </li>
+                <li>
+                  <strong>pages_manage_posts</strong> - To access post content on Pages
+                </li>
+                <li>
+                  <strong>public_profile</strong> - Basic permission for user profiles
+                </li>
+                <li>
+                  <strong>email</strong> - To access the user&apos;s email address
+                </li>
               </ul>
             </li>
-            <li>
-              For each permission, click &quot;Request&quot; or &quot;Add to Submission&quot;
-            </li>
+            <li>For each permission, click &quot;Request&quot; or &quot;Add to Submission&quot;</li>
             <li>
               You&apos;ll need to explain how your app will use each permission. Be specific about:
               <ul className="list-disc pl-6 mt-2">
@@ -167,41 +164,57 @@ export default function FacebookSetupPage() {
               </ul>
             </li>
             <li>
-              <strong>Important note about permissions:</strong> If you cannot find a specific permission, try:
+              <strong>Important note about permissions:</strong> If you cannot find a specific
+              permission, try:
               <ul className="list-disc pl-6 mt-2">
                 <li>Using the search functionality in the Permissions page</li>
                 <li>Looking under different categories (Graph API, Marketing API, etc.)</li>
-                <li>Checking the <a href="https://developers.facebook.com/docs/permissions/reference/" className="text-primary hover:underline" target="_blank">Facebook Permissions Reference</a> for the most up-to-date list</li>
+                <li>
+                  Checking the{' '}
+                  <a
+                    href="https://developers.facebook.com/docs/permissions/reference/"
+                    className="text-primary hover:underline"
+                    target="_blank"
+                  >
+                    Facebook Permissions Reference
+                  </a>{' '}
+                  for the most up-to-date list
+                </li>
               </ul>
             </li>
             <li>
-              When testing your app, note that some permissions only work in Live mode after approval, but &quot;pages_read_engagement&quot; and &quot;pages_show_list&quot; should be available for testing with developer accounts
+              When testing your app, note that some permissions only work in Live mode after
+              approval, but &quot;pages_read_engagement&quot; and &quot;pages_show_list&quot; should
+              be available for testing with developer accounts
             </li>
           </ol>
         </section>
       </div>
-      
+
       <Alert className="mt-8">
         <InfoIcon className="h-4 w-4" />
         <AlertTitle>Important Note</AlertTitle>
         <AlertDescription>
-          While your app is in development mode, it will only work for users who are added as developers or testers. To make it available to all users, you'll need to complete the App Review process and set your app to Live mode.
+          While your app is in development mode, it will only work for users who are added as
+          developers or testers. To make it available to all users, you'll need to complete the App
+          Review process and set your app to Live mode.
         </AlertDescription>
       </Alert>
-      
+
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Adding Required Privacy Policy and Data Deletion Information</CardTitle>
           <CardDescription>
-            Before switching to live mode, Facebook requires privacy policy and data deletion information
+            Before switching to live mode, Facebook requires privacy policy and data deletion
+            information
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <section className="mb-6">
             <h3 className="text-lg font-medium mb-2">Why This Is Required</h3>
             <p className="mb-4">
-              Facebook requires all apps to have a privacy policy and data deletion instructions to protect user privacy
-              and comply with various privacy regulations (like GDPR, CCPA).
+              Facebook requires all apps to have a privacy policy and data deletion instructions to
+              protect user privacy and comply with various privacy regulations (like GDPR, CCPA).
             </p>
           </section>
 
@@ -219,16 +232,24 @@ export default function FacebookSetupPage() {
                 </ul>
               </li>
               <li>
-                If you don&apos;t have a website, you can use a privacy policy generator service or create a simple
-                GitHub page to host your privacy policy.
+                If you don&apos;t have a website, you can use a privacy policy generator service or
+                create a simple GitHub page to host your privacy policy.
               </li>
               <li>
-                <strong>We&apos;ve created templates for you:</strong> You can use our 
-                <Link href="/privacy-policy" className="text-primary hover:underline mx-1" target="_blank">
+                <strong>We&apos;ve created templates for you:</strong> You can use our
+                <Link
+                  href="/privacy-policy"
+                  className="text-primary hover:underline mx-1"
+                  target="_blank"
+                >
                   privacy policy
                 </Link>
                 and
-                <Link href="/data-deletion" className="text-primary hover:underline mx-1" target="_blank">
+                <Link
+                  href="/data-deletion"
+                  className="text-primary hover:underline mx-1"
+                  target="_blank"
+                >
                   data deletion
                 </Link>
                 pages as templates. Just customize them with your information.
@@ -240,17 +261,15 @@ export default function FacebookSetupPage() {
             <h3 className="text-lg font-medium mb-2">Step 2: Add Privacy Policy to Your App</h3>
             <ol className="list-decimal pl-6 space-y-4">
               <li>
-                In the left sidebar of your App Dashboard, click on &quot;Settings&quot; and then &quot;Basic&quot;
+                In the left sidebar of your App Dashboard, click on &quot;Settings&quot; and then
+                &quot;Basic&quot;
               </li>
+              <li>Scroll down to the &quot;Privacy Policy URL&quot; field</li>
               <li>
-                Scroll down to the &quot;Privacy Policy URL&quot; field
+                Enter the full URL to your privacy policy (e.g.,
+                https://yourdomain.com/privacy-policy)
               </li>
-              <li>
-                Enter the full URL to your privacy policy (e.g., https://yourdomain.com/privacy-policy)
-              </li>
-              <li>
-                Click &quot;Save Changes&quot;
-              </li>
+              <li>Click &quot;Save Changes&quot;</li>
             </ol>
           </section>
 
@@ -258,24 +277,24 @@ export default function FacebookSetupPage() {
             <h3 className="text-lg font-medium mb-2">Step 3: Add Data Deletion Instructions</h3>
             <ol className="list-decimal pl-6 space-y-4">
               <li>
-                Still in the Basic Settings page, find the &quot;Data Deletion Instructions URL&quot; section
+                Still in the Basic Settings page, find the &quot;Data Deletion Instructions
+                URL&quot; section
               </li>
               <li>
                 You have two options:
                 <ul className="list-disc pl-6 mt-2">
                   <li>
-                    <strong>URL option:</strong> Provide a URL to a page that explains how users can request data deletion
-                    (can be a section in your privacy policy)
+                    <strong>URL option:</strong> Provide a URL to a page that explains how users can
+                    request data deletion (can be a section in your privacy policy)
                   </li>
                   <li>
-                    <strong>Instructions option:</strong> Directly type instructions explaining how users can request
-                    their data be deleted from your app (such as an email address to contact)
+                    <strong>Instructions option:</strong> Directly type instructions explaining how
+                    users can request their data be deleted from your app (such as an email address
+                    to contact)
                   </li>
                 </ul>
               </li>
-              <li>
-                Complete the chosen option and click &quot;Save Changes&quot;
-              </li>
+              <li>Complete the chosen option and click &quot;Save Changes&quot;</li>
             </ol>
           </section>
 
@@ -283,16 +302,16 @@ export default function FacebookSetupPage() {
             <h3 className="text-lg font-medium mb-2">Example Data Deletion Instructions</h3>
             <div className="bg-muted p-4 rounded-md">
               <p className="text-sm">
-                &quot;To request deletion of your data collected through our app, please email 
-                privacy@yourdomain.com with the subject line &apos;Data Deletion Request&apos;. 
-                Include your Facebook User ID if possible. We will process your request within 
-                30 days and notify you when complete.&quot;
+                &quot;To request deletion of your data collected through our app, please email
+                privacy@yourdomain.com with the subject line &apos;Data Deletion Request&apos;.
+                Include your Facebook User ID if possible. We will process your request within 30
+                days and notify you when complete.&quot;
               </p>
             </div>
           </section>
         </CardContent>
       </Card>
-      
+
       <div className="mt-8">
         <Link href="/dashboard/crawlers/facebook" className="text-primary hover:underline">
           ← Back to Facebook Crawler
@@ -300,4 +319,4 @@ export default function FacebookSetupPage() {
       </div>
     </div>
   );
-} 
+}
